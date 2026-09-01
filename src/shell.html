@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PixeLabs Theme Studio — Ableton Live 12 theme editor</title>
+<meta name="description" content="Free browser-based theme editor for Ableton Live 12. Design a theme, check its contrast, export a .ask file. Works offline.">
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PixeLabs Theme Studio</h1>
+  <span class="sub">Ableton Live 12 &middot; 276 theme entries &middot; OKLCH</span>
+  <span class="spacer"></span>
+  <a class="sub" href="index.html">&larr; Themes &amp; install guide</a>
+</header>
+
+<div class="layout">
+
+  <!-- ── controls ─────────────────────────────────────────────────────── -->
+  <section aria-label="Theme controls">
+    <h2 class="panel-title">Start from</h2>
+    <div class="group">
+      <select id="preset" aria-label="Preset theme"></select>
+    </div>
+
+    <div class="group">
+      <h2 class="panel-title">Mode</h2>
+      <div class="chips" role="group" aria-label="Light or dark">
+        <button class="chip" data-mode="dark" aria-pressed="true">Dark</button>
+        <button class="chip" data-mode="light" aria-pressed="false">Light</button>
+      </div>
+    </div>
+
+    <div class="group" id="controls"></div>
+  </section>
+
+  <!-- ── preview ──────────────────────────────────────────────────────── -->
+  <section aria-label="Preview">
+    <h2 class="panel-title">Preview</h2>
+    <div class="mock" id="mock"></div>
+    <p class="note" style="margin-top:10px">
+      A structural mock-up, not a screenshot &mdash; enough to judge a palette without
+      restarting Live. Always check the real thing before you ship a theme.
+    </p>
+
+    <div class="group" style="margin-top:16px">
+      <h2 class="panel-title">Clip palette <span style="text-transform:none;letter-spacing:0">(Clip 1&ndash;16)</span></h2>
+      <div class="swatches" id="clipswatches"></div>
+      <p class="note" style="margin-top:8px">
+        Live ships these identical in all 18 of its built-in themes, so recolouring
+        them is the change people notice first.
+      </p>
+    </div>
+
+    <details>
+      <summary>All 186 roles &mdash; per-colour override</summary>
+      <input type="text" id="rolesearch" placeholder="Filter roles&hellip;" style="margin-top:8px">
+      <div class="roles" id="roles"></div>
+      <button id="reset" style="margin-top:8px">Clear overrides</button>
+    </details>
+  </section>
+
+  <!-- ── output ───────────────────────────────────────────────────────── -->
+  <section aria-label="Contrast and export">
+    <h2 class="panel-title">Contrast</h2>
+    <div class="audit" id="audit"></div>
+    <p class="note" style="margin-top:8px">
+      WCAG ratios for the pairs that carry text. <strong>Accent on surface</strong> is
+      reported but not graded &mdash; the accent is a fill behind text, and Live's own
+      light themes sit near 1:1 there.
+    </p>
+
+    <div class="group" style="margin-top:18px">
+      <h2 class="panel-title">Theme name</h2>
+      <input type="text" id="name" aria-label="Theme name">
+    </div>
+
+    <div class="group">
+      <h2 class="panel-title">Watermark <span style="text-transform:none;letter-spacing:0">(optional)</span></h2>
+      <input type="text" id="wm" aria-label="Watermark payload">
+      <p class="note" style="margin-top:6px">
+        Writes an ID into the file as an XML comment and as &plusmn;1 nudges on a few
+        inert colours. It <strong>traces</strong> a leaked copy back to a download &mdash;
+        it does not prevent copying. A <code>.ask</code> has to stay readable for Live to
+        load it, so no theme can be protected. Nobody's can.
+      </p>
+    </div>
+
+    <div class="group">
+      <h2 class="panel-title">Export</h2>
+      <div class="row">
+        <button class="primary" id="export">Save .ask</button>
+        <button id="copy">Copy XML</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button id="exportpack">Download all themes (.zip)</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button id="installer-mac">macOS installer</button>
+        <button id="installer-win">Windows installer</button>
+      </div>
+      <p class="note" style="margin-top:6px">
+        A browser can't find Ableton on your disk &mdash; it has no way to look. These
+        scripts can: put one in the same folder as your <code>.ask</code> files and run it.
+        See <strong>Installing a theme</strong> below.
+      </p>
+      <div class="row" style="margin-top:6px">
+        <label class="chip" style="flex:1;text-align:center">
+          Import .ask&hellip;
+          <input type="file" id="file" accept=".ask,.xml" style="display:none">
+        </label>
+      </div>
+      <textarea class="fallback" id="xml" readonly aria-label="Theme XML"></textarea>
+      <p class="note">
+        If your browser blocks the download (Safari sometimes does from a local file),
+        copy the XML above and save it as <code>YourTheme.ask</code>.
+      </p>
+    </div>
+
+    <details>
+      <summary>Installing a theme</summary>
+
+      <p class="note" style="margin-top:10px"><strong>By hand &mdash; macOS</strong><br>
+        The folder is <em>inside</em> the app. Quit Live, open <strong>Applications</strong>
+        in Finder, right-click your Ableton Live app, choose
+        <strong>Show Package Contents</strong>, then open
+        <code>Contents/App-Resources/Themes</code> and drop the <code>.ask</code> in.
+      </p>
+
+      <p class="note"><strong>By hand &mdash; Windows</strong><br>
+        <code>C:\ProgramData\Ableton\Live 12\Resources\Themes\</code><br>
+        If that isn't there, look for <code>Resources\Themes</code> inside your Ableton
+        Live install folder.
+      </p>
+
+      <p class="note" style="margin-top:12px"><strong>Or run the installer script</strong><br>
+        It finds your Ableton install itself, copies every <code>.ask</code> file sitting
+        in the same folder as the script, and refuses to run while Live is open. It's plain
+        text &mdash; open it and read it before running it.
+      </p>
+
+      <p class="note"><strong>macOS &mdash; <code>install-macos.command</code></strong><br>
+        macOS quarantines scripts downloaded from a browser, so the first time you must
+        <strong>right-click it and choose Open</strong>. Double-clicking will be blocked.
+        If you have more than one version of Live installed it asks which one.
+      </p>
+
+      <p class="note"><strong>Windows &mdash; <code>install-windows.bat</code></strong><br>
+        Double-click it. If SmartScreen warns you, choose <strong>More info &rarr;
+        Run anyway</strong>. If files fail to copy, the Themes folder needs elevation &mdash;
+        right-click the script and choose <strong>Run as administrator</strong>.
+      </p>
+
+      <p class="note">
+        Either way, remember a Live update replaces the app and wipes custom themes. Keep
+        your <code>.ask</code> files somewhere safe and install them again afterwards.
+      </p>
+    </details>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>

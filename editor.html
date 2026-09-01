@@ -1,0 +1,1911 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PixeLabs Theme Studio — Ableton Live 12 theme editor</title>
+<meta name="description" content="Free browser-based theme editor for Ableton Live 12. Design a theme, check its contrast, export a .ask file. Works offline.">
+<style>
+:root {
+  --ink: #16171b; --ink-2: #1d1f24; --ink-3: #26282f;
+  --line: #33363f; --fg: #e6e7ea; --fg-dim: #9a9daa; --fg-faint: #6d707c;
+  --brand: #ff8a3d; --brand-2: #46d9c8; --ok: #4ac97e; --bad: #ff6b6b;
+  --radius: 6px; --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--fg); font: 13px/1.5 var(--sans); }
+h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+a { color: var(--brand); }
+
+header {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  padding: 14px 18px; border-bottom: 1px solid var(--line); background: var(--ink-2);
+}
+header h1 { font-size: 15px; }
+header .sub { color: var(--fg-faint); font-size: 12px; }
+header .spacer { flex: 1; }
+
+.layout { display: grid; grid-template-columns: 290px minmax(0, 1fr) 290px; gap: 1px; background: var(--line); }
+.layout > section { background: var(--ink); padding: 16px; min-width: 0; }
+@media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+
+.panel-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--fg-faint); margin: 0 0 10px;
+}
+.group { margin-bottom: 20px; }
+
+label.field { display: block; margin-bottom: 11px; }
+label.field > span { display: flex; justify-content: space-between; font-size: 12px; color: var(--fg-dim); margin-bottom: 4px; }
+label.field b { font-weight: 500; font-family: var(--mono); font-size: 11px; color: var(--fg); }
+input[type=range] { width: 100%; accent-color: var(--brand); }
+input[type=text] {
+  width: 100%; padding: 6px 8px; background: var(--ink-3); color: var(--fg);
+  border: 1px solid var(--line); border-radius: var(--radius); font: 12px var(--sans);
+}
+select {
+  width: 100%; padding: 6px 8px; background: var(--ink-3); color: var(--fg);
+  border: 1px solid var(--line); border-radius: var(--radius); font: 12px var(--sans);
+}
+button {
+  padding: 7px 11px; background: var(--ink-3); color: var(--fg); border: 1px solid var(--line);
+  border-radius: var(--radius); cursor: pointer; font: 500 12px var(--sans);
+}
+button:hover { border-color: var(--fg-faint); }
+button.primary { background: var(--brand); border-color: var(--brand); color: #1a1004; }
+button.primary:hover { filter: brightness(1.08); }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 2px solid var(--brand-2); outline-offset: 2px;
+}
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.row > button { flex: 1; }
+
+.chips { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+.chip {
+  padding: 4px 9px; font-size: 11px; border-radius: 999px;
+  background: var(--ink-3); border: 1px solid var(--line); cursor: pointer; color: var(--fg-dim);
+}
+.chip[aria-pressed=true] { background: var(--brand); border-color: var(--brand); color: #1a1004; }
+
+/* ── contrast report ── */
+.audit { display: flex; flex-direction: column; gap: 6px; }
+.audit-row {
+  display: flex; align-items: center; gap: 8px; padding: 6px 8px;
+  background: var(--ink-2); border-radius: var(--radius); font-size: 12px;
+}
+.audit-row .lbl { flex: 1; color: var(--fg-dim); }
+.audit-row .val { font-family: var(--mono); font-size: 11px; }
+.badge { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+.badge.pass { background: rgba(74,201,126,.15); color: var(--ok); }
+.badge.fail { background: rgba(255,107,107,.15); color: var(--bad); }
+.badge.info { background: rgba(255,255,255,.07); color: var(--fg-faint); }
+
+.note { font-size: 11px; line-height: 1.5; color: var(--fg-faint); }
+.note strong { color: var(--fg-dim); font-weight: 600; }
+
+/* ── swatches ── */
+.swatches { display: grid; grid-template-columns: repeat(16, 1fr); gap: 3px; }
+.swatches i { display: block; height: 34px; border-radius: 3px; }
+@media (max-width: 700px) { .swatches { grid-template-columns: repeat(8, 1fr); } }
+
+details { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 14px; }
+summary { cursor: pointer; font-size: 12px; color: var(--fg-dim); }
+.roles { max-height: 260px; overflow: auto; margin-top: 10px; }
+.role-row { display: flex; align-items: center; gap: 7px; padding: 3px 0; font-size: 11px; }
+.role-row i { width: 15px; height: 15px; border-radius: 3px; border: 1px solid rgba(255,255,255,.12); flex: none; }
+.role-row code { font-family: var(--mono); color: var(--fg-dim); flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.role-row input[type=color] { width: 22px; height: 20px; padding: 0; border: 0; background: none; }
+
+textarea.fallback {
+  width: 100%; height: 120px; margin-top: 8px; font: 10px/1.4 var(--mono);
+  background: var(--ink-2); color: var(--fg-dim); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 6px;
+}
+.toast {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  background: var(--ink-3); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 9px 15px; font-size: 12px; box-shadow: 0 6px 22px rgba(0,0,0,.45);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.toast.show { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } * { animation: none !important; } }
+
+/* ── Ableton mock ──────────────────────────────────────────────────────────
+   Not pixel-exact — enough structure to judge a palette without restarting
+   Live: browser, session grid, mixer with meters, transport, device chain. */
+.mock {
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  font: 10px/1.35 var(--sans); user-select: none; background: var(--m-desktop);
+}
+.mock-transport {
+  display: flex; align-items: center; gap: 7px; padding: 5px 8px;
+  background: var(--m-transportbg); color: var(--m-text); border-bottom: 1px solid var(--m-frame);
+}
+.mock-transport .pill {
+  padding: 2px 7px; border-radius: 3px; background: var(--m-control); color: var(--m-text);
+  font-family: var(--mono); font-size: 10px;
+}
+.mock-transport .pill.on { background: var(--m-accent); color: var(--m-onaccent); }
+.mock-transport .pill.rec { background: var(--m-record); color: var(--m-onaccent); }
+.mock-transport .pill.play { background: var(--m-play); color: var(--m-onaccent); }
+.mock-body { display: grid; grid-template-columns: 116px minmax(0,1fr); min-height: 268px; }
+.mock-browser { background: var(--m-browserbar); border-right: 1px solid var(--m-frame); padding: 5px 0; }
+.mock-browser .cat { padding: 3px 9px; color: var(--m-browsertext); }
+.mock-browser .cat.sel { background: var(--m-highlight); color: var(--m-text); }
+.mock-browser .hd { padding: 3px 9px; color: var(--m-accent); font-weight: 600; }
+.mock-main { display: flex; flex-direction: column; min-width: 0; }
+.mock-tracks { flex: 1; display: flex; gap: 1px; padding: 5px; background: var(--m-surface); overflow: hidden; align-content: start; }
+.mock-track { flex: 1 1 0; min-width: 0; }
+.mock-track .hdr {
+  padding: 2px 5px; color: var(--m-text); background: var(--m-trackhdr);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 2px 2px 0 0;
+}
+.mock-slot {
+  height: 15px; margin-top: 1px; border-radius: 2px; display: flex; align-items: center;
+  padding: 0 4px; color: var(--m-onclip); background: var(--m-control); overflow: hidden;
+}
+.mock-slot.empty { background: var(--m-control); }
+.mock-slot .tri { font-size: 7px; margin-right: 3px; opacity: .75; }
+.mock-scenes { width: 46px; flex: none; }
+.mock-scenes .hdr { background: var(--m-trackhdr); color: var(--m-textdim); }
+.mock-scenes .mock-slot { background: var(--m-highlight); color: var(--m-text); justify-content: center; }
+.mock-mixer { display: flex; gap: 1px; padding: 4px 5px 6px; background: var(--m-surface); }
+.mock-strip {
+  flex: 1 1 0; min-width: 0; height: 44px;
+  display: flex; gap: 3px; align-items: flex-end; justify-content: center;
+}
+.mock-meter { width: 7px; flex: none; height: 100%; background: var(--m-meterbg); border-radius: 1px; position: relative; overflow: hidden; }
+.mock-meter span { position: absolute; left: 0; right: 0; bottom: 0; }
+.mock-fader { width: 5px; flex: none; background: var(--m-handle); border-radius: 2px; position: relative; }
+.mock-fader::after {
+  content: ''; position: absolute; left: -2px; right: -2px; height: 6px;
+  background: var(--m-text); border-radius: 2px;
+}
+.mock-device {
+  border-top: 1px solid var(--m-frame); background: var(--m-detail);
+  padding: 6px; display: flex; gap: 7px; align-items: flex-start;
+}
+.mock-dev {
+  background: var(--m-surface); border-radius: 3px; padding: 5px 7px; min-width: 96px;
+  color: var(--m-text);
+}
+.mock-dev .t { color: var(--m-text); font-weight: 600; margin-bottom: 4px; }
+.mock-knobs { display: flex; gap: 6px; }
+.mock-knob { width: 19px; height: 19px; border-radius: 50%; background: var(--m-control); position: relative; }
+.mock-knob::after {
+  content: ''; position: absolute; left: 50%; top: 2px; width: 2px; height: 7px;
+  margin-left: -1px; background: var(--m-accent2); border-radius: 1px;
+}
+.mock-lcd {
+  background: var(--m-displaybg); color: var(--m-lcdtext); border-radius: 3px;
+  padding: 5px 7px; font-family: var(--mono); font-size: 10px; flex: 1; min-width: 0;
+}
+.mock-lcd .wave { display: flex; align-items: flex-end; gap: 1px; height: 22px; margin-top: 3px; }
+.mock-lcd .wave i { flex: 1; background: var(--m-wave); border-radius: 1px; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PixeLabs Theme Studio</h1>
+  <span class="sub">Ableton Live 12 &middot; 276 theme entries &middot; OKLCH</span>
+  <span class="spacer"></span>
+  <a class="sub" href="index.html">&larr; Themes &amp; install guide</a>
+</header>
+
+<div class="layout">
+
+  <!-- ── controls ─────────────────────────────────────────────────────── -->
+  <section aria-label="Theme controls">
+    <h2 class="panel-title">Start from</h2>
+    <div class="group">
+      <select id="preset" aria-label="Preset theme"></select>
+    </div>
+
+    <div class="group">
+      <h2 class="panel-title">Mode</h2>
+      <div class="chips" role="group" aria-label="Light or dark">
+        <button class="chip" data-mode="dark" aria-pressed="true">Dark</button>
+        <button class="chip" data-mode="light" aria-pressed="false">Light</button>
+      </div>
+    </div>
+
+    <div class="group" id="controls"></div>
+  </section>
+
+  <!-- ── preview ──────────────────────────────────────────────────────── -->
+  <section aria-label="Preview">
+    <h2 class="panel-title">Preview</h2>
+    <div class="mock" id="mock"></div>
+    <p class="note" style="margin-top:10px">
+      A structural mock-up, not a screenshot &mdash; enough to judge a palette without
+      restarting Live. Always check the real thing before you ship a theme.
+    </p>
+
+    <div class="group" style="margin-top:16px">
+      <h2 class="panel-title">Clip palette <span style="text-transform:none;letter-spacing:0">(Clip 1&ndash;16)</span></h2>
+      <div class="swatches" id="clipswatches"></div>
+      <p class="note" style="margin-top:8px">
+        Live ships these identical in all 18 of its built-in themes, so recolouring
+        them is the change people notice first.
+      </p>
+    </div>
+
+    <details>
+      <summary>All 186 roles &mdash; per-colour override</summary>
+      <input type="text" id="rolesearch" placeholder="Filter roles&hellip;" style="margin-top:8px">
+      <div class="roles" id="roles"></div>
+      <button id="reset" style="margin-top:8px">Clear overrides</button>
+    </details>
+  </section>
+
+  <!-- ── output ───────────────────────────────────────────────────────── -->
+  <section aria-label="Contrast and export">
+    <h2 class="panel-title">Contrast</h2>
+    <div class="audit" id="audit"></div>
+    <p class="note" style="margin-top:8px">
+      WCAG ratios for the pairs that carry text. <strong>Accent on surface</strong> is
+      reported but not graded &mdash; the accent is a fill behind text, and Live's own
+      light themes sit near 1:1 there.
+    </p>
+
+    <div class="group" style="margin-top:18px">
+      <h2 class="panel-title">Theme name</h2>
+      <input type="text" id="name" aria-label="Theme name">
+    </div>
+
+    <div class="group">
+      <h2 class="panel-title">Watermark <span style="text-transform:none;letter-spacing:0">(optional)</span></h2>
+      <input type="text" id="wm" aria-label="Watermark payload">
+      <p class="note" style="margin-top:6px">
+        Writes an ID into the file as an XML comment and as &plusmn;1 nudges on a few
+        inert colours. It <strong>traces</strong> a leaked copy back to a download &mdash;
+        it does not prevent copying. A <code>.ask</code> has to stay readable for Live to
+        load it, so no theme can be protected. Nobody's can.
+      </p>
+    </div>
+
+    <div class="group">
+      <h2 class="panel-title">Export</h2>
+      <div class="row">
+        <button class="primary" id="export">Save .ask</button>
+        <button id="copy">Copy XML</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button id="exportpack">Download all themes (.zip)</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button id="installer-mac">macOS installer</button>
+        <button id="installer-win">Windows installer</button>
+      </div>
+      <p class="note" style="margin-top:6px">
+        A browser can't find Ableton on your disk &mdash; it has no way to look. These
+        scripts can: put one in the same folder as your <code>.ask</code> files and run it.
+        See <strong>Installing a theme</strong> below.
+      </p>
+      <div class="row" style="margin-top:6px">
+        <label class="chip" style="flex:1;text-align:center">
+          Import .ask&hellip;
+          <input type="file" id="file" accept=".ask,.xml" style="display:none">
+        </label>
+      </div>
+      <textarea class="fallback" id="xml" readonly aria-label="Theme XML"></textarea>
+      <p class="note">
+        If your browser blocks the download (Safari sometimes does from a local file),
+        copy the XML above and save it as <code>YourTheme.ask</code>.
+      </p>
+    </div>
+
+    <details>
+      <summary>Installing a theme</summary>
+
+      <p class="note" style="margin-top:10px"><strong>By hand &mdash; macOS</strong><br>
+        The folder is <em>inside</em> the app. Quit Live, open <strong>Applications</strong>
+        in Finder, right-click your Ableton Live app, choose
+        <strong>Show Package Contents</strong>, then open
+        <code>Contents/App-Resources/Themes</code> and drop the <code>.ask</code> in.
+      </p>
+
+      <p class="note"><strong>By hand &mdash; Windows</strong><br>
+        <code>C:\ProgramData\Ableton\Live 12\Resources\Themes\</code><br>
+        If that isn't there, look for <code>Resources\Themes</code> inside your Ableton
+        Live install folder.
+      </p>
+
+      <p class="note" style="margin-top:12px"><strong>Or run the installer script</strong><br>
+        It finds your Ableton install itself, copies every <code>.ask</code> file sitting
+        in the same folder as the script, and refuses to run while Live is open. It's plain
+        text &mdash; open it and read it before running it.
+      </p>
+
+      <p class="note"><strong>macOS &mdash; <code>install-macos.command</code></strong><br>
+        macOS quarantines scripts downloaded from a browser, so the first time you must
+        <strong>right-click it and choose Open</strong>. Double-clicking will be blocked.
+        If you have more than one version of Live installed it asks which one.
+      </p>
+
+      <p class="note"><strong>Windows &mdash; <code>install-windows.bat</code></strong><br>
+        Double-click it. If SmartScreen warns you, choose <strong>More info &rarr;
+        Run anyway</strong>. If files fail to copy, the Themes folder needs elevation &mdash;
+        right-click the script and choose <strong>Run as administrator</strong>.
+      </p>
+
+      <p class="note">
+        Either way, remember a Live update replaces the app and wipes custom themes. Keep
+        your <code>.ask</code> files somewhere safe and install them again afterwards.
+      </p>
+    </details>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ── build/schema.js ── */
+// Generated by tools/gen_schema.py -- do not edit by hand.
+// Structure only: no Ableton colour values. Hue/chroma come from our palettes.
+// [tag, vuGroup, kind(c|n|b), role, alphaHex]  276 entries, canonical order.
+var SCHEMA = [
+  ["ControlForeground","","c","text.primary",""],
+  ["TextDisabled","","c","text.dim",""],
+  ["ControlDisabled","","c","text.dim.controlDisabled",""],
+  ["MeterBackground","","c","bg.deepest",""],
+  ["SurfaceHighlight","","c","bg.highlight",""],
+  ["SurfaceArea","","c","bg.surface",""],
+  ["Desktop","","c","bg.desktop",""],
+  ["ViewCheckControlEnabledOn","","c","accent.primary",""],
+  ["ScrollbarInnerHandle","","c","ui.scrollbar",""],
+  ["ScrollbarInnerTrack","","c","ui.transparent","00"],
+  ["ScrollbarLCDHandle","","c","ui.scrollbar.scrollbarLCDHandle",""],
+  ["ScrollbarLCDTrack","","c","bg.raised",""],
+  ["ScrollbarMixerShowOnScrollHandle","","c","ui.shadeSoft","66"],
+  ["DetailViewBackground","","c","bg.detail",""],
+  ["PreferencesTab","","c","bg.raised.preferencesTab",""],
+  ["SelectionFrame","","c","text.dim.selectionFrame",""],
+  ["ControlBackground","","c","bg.control",""],
+  ["ControlFillHandle","","c","ui.handle",""],
+  ["ChosenDefault","","c","accent.primary",""],
+  ["ChosenRecord","","c","sem.record",""],
+  ["ChosenPreListen","","c","sem.preListen",""],
+  ["ImplicitArm","","c","sem.recordArm","64"],
+  ["RangeDefault","","c","accent.secondary",""],
+  ["RangeDisabled","","c","text.dim.controlDisabled",""],
+  ["RangeDisabledOff","","c","ui.faint",""],
+  ["LearnMidi","","c","learn.midi",""],
+  ["LearnKey","","c","learn.key",""],
+  ["LearnMacro","","c","learn.macro",""],
+  ["RangeEditField","","c","field.edit1",""],
+  ["RangeEditField2","","c","field.edit2",""],
+  ["BipolReset","","c","accent.secondary",""],
+  ["ChosenAlternative","","c","accent.secondary",""],
+  ["ChosenAlert","","c","sem.alert",""],
+  ["ChosenPlay","","c","sem.play",""],
+  ["Clip1","","c","clip.1",""],
+  ["Clip2","","c","clip.2",""],
+  ["Clip3","","c","clip.3",""],
+  ["Clip4","","c","clip.4",""],
+  ["Clip5","","c","clip.5",""],
+  ["Clip6","","c","clip.6",""],
+  ["Clip7","","c","clip.7",""],
+  ["Clip8","","c","clip.8",""],
+  ["Clip9","","c","clip.9",""],
+  ["Clip10","","c","clip.10",""],
+  ["Clip11","","c","clip.11",""],
+  ["Clip12","","c","clip.12",""],
+  ["Clip13","","c","clip.13",""],
+  ["Clip14","","c","clip.14",""],
+  ["Clip15","","c","clip.15",""],
+  ["Clip16","","c","clip.16",""],
+  ["ClipText","","c","text.onClip",""],
+  ["ClipBorder","","c","bg.desktop.clipBorder",""],
+  ["SceneContrast","","c","bg.desktop.sceneContrast",""],
+  ["SelectionBackground","","c","sel.background",""],
+  ["StandbySelectionBackground","","c","sel.standby",""],
+  ["SelectionForeground","","c","text.onAccent",""],
+  ["StandbySelectionForeground","","c","text.onAccent",""],
+  ["SelectionBackgroundContrast","","c","sel.backgroundContrast",""],
+  ["SurfaceBackground","","c","bg.raised.preferencesTab",""],
+  ["TakeLaneTrackHighlighted","","c","bg.detail.takeLaneTrackHighlighted",""],
+  ["TakeLaneTrackNotHighlighted","","c","bg.laneIdle",""],
+  ["AutomationColor","","c","sem.automation",""],
+  ["AutomationGrid","","c","grid.automation",""],
+  ["LoopColor","","c","text.ruler",""],
+  ["OffGridLoopColor","","c","grid.loopOff","4f"],
+  ["ArrangementRulerMarkings","","c","text.ruler.arrangementRulerMarkings",""],
+  ["DetailViewRulerMarkings","","c","text.ruler.arrangementRulerMarkings",""],
+  ["ShadowDark","","c","ui.shadowDark","54"],
+  ["ShadowLight","","c","ui.shadowLight","cc"],
+  ["DisplayBackground","","c","bg.deepest.displayBackground",""],
+  ["AbletonColor","","c","brand.ableton",""],
+  ["WaveformColor","","c","wave.main","ef"],
+  ["DimmedWaveformColor","","c","wave.dimmed","df"],
+  ["VelocityColor","","c","sem.velocity",""],
+  ["VelocitySelectedOrHovered","","c","accent.hover",""],
+  ["NoteProbability","","c","ui.faint",""],
+  ["Alert","","c","sem.alert",""],
+  ["ControlOnForeground","","c","text.onAccent",""],
+  ["ControlOffForeground","","c","text.primary",""],
+  ["ControlOnDisabledForeground","","c","bg.surface.controlOnDisabledForeground",""],
+  ["ControlOffDisabledForeground","","c","ui.scrollbar.controlOffDisabledForeground",""],
+  ["ControlOnAlternativeForeground","","c","text.onAccent",""],
+  ["ControlTextBack","","c","bg.surface.controlTextBack",""],
+  ["ControlContrastFrame","","c","ui.frameDeep",""],
+  ["ControlSelectionFrame","","c","text.ruler.controlSelectionFrame",""],
+  ["ControlContrastTransport","","c","bg.raised.controlContrastTransport",""],
+  ["ViewControlOn","","c","accent.primary",""],
+  ["ViewControlOff","","c","bg.highlight.viewControlOff",""],
+  ["Progress","","c","accent.primary",""],
+  ["ProgressText","","c","ui.faint",""],
+  ["TransportProgress","","c","accent.primary",""],
+  ["ClipSlotButton","","c","bg.control.clipSlotButton",""],
+  ["BrowserBar","","c","bg.raised.preferencesTab",""],
+  ["BrowserBarOverlayHintTextColor","","c","ui.handle.browserBarOverlayHintTextColor",""],
+  ["BrowserDisabledItem","","c","text.dim.browserDisabledItem",""],
+  ["BrowserSampleWaveform","","c","text.mid",""],
+  ["AutomationDisabled","","c","sem.automationOff",""],
+  ["AutomationMouseOver","","c","sem.automationHover",""],
+  ["MidiNoteMaxVelocity","","c","sem.velocity",""],
+  ["RetroDisplayBackground","","c","bg.deepest",""],
+  ["RetroDisplayBackgroundLine","","c","bg.detail.retroDisplayBackgroundLine",""],
+  ["RetroDisplayForeground","","c","accent.primary",""],
+  ["RetroDisplayForeground2","","c","accent.secondary",""],
+  ["RetroDisplayForegroundDisabled","","c","text.mid.retroDisplayForegroundDisabled",""],
+  ["RetroDisplayGreen","","c","accent.primary",""],
+  ["RetroDisplayRed","","c","accent.secondary",""],
+  ["RetroDisplayHandle1","","c","accent.primary",""],
+  ["RetroDisplayHandle2","","c","display.handle2",""],
+  ["RetroDisplayScaleText","","c","text.mid.retroDisplayScaleText",""],
+  ["RetroDisplayTitle","","c","text.primary.retroDisplayTitle",""],
+  ["ThresholdLineColor","","c","accent.secondary",""],
+  ["GainReductionLineColor","","c","accent.primary",""],
+  ["InputCurveColor","","c","ui.spectrum",""],
+  ["InputCurveOutlineColor","","c","ui.transparent.inputCurveOutlineColor","00"],
+  ["OutputCurveColor","","c","curve.output","4c"],
+  ["OutputCurveOutlineColor","","c","curve.outputLine",""],
+  ["SpectrumDefaultColor","","c","ui.spectrum",""],
+  ["SpectrumAlternativeColor","","c","sem.preListen",""],
+  ["SpectrumGridLines","","c","grid.spectrum","3f"],
+  ["Operator1","","c","op.1",""],
+  ["Operator2","","c","op.2",""],
+  ["Operator3","","c","op.3",""],
+  ["Operator4","","c","op.4",""],
+  ["DrumRackScroller1","","c","bg.highlight.drumRackScroller1",""],
+  ["DrumRackScroller2","","c","ui.scrollbar.controlOffDisabledForeground",""],
+  ["FilledDrumRackPad","","c","text.primary.retroDisplayTitle",""],
+  ["SurfaceAreaFocus","","c","bg.surface",""],
+  ["FreezeColor","","c","sem.freeze",""],
+  ["GridLabel","","c","grid.label","7f"],
+  ["GridLineBase","","c","grid.line","54"],
+  ["ArrangerGridTiles","","c","grid.tiles","19"],
+  ["DetailGridTiles","","c","grid.tiles","19"],
+  ["GridGuideline","","c","text.primary.gridGuideline",""],
+  ["OffGridGuideline","","c","grid.guideOff","4f"],
+  ["TreeColumnHeadBackground","","c","bg.highlight",""],
+  ["TreeColumnHeadForeground","","c","text.primary.treeColumnHeadForeground",""],
+  ["TreeColumnHeadSelected","","c","bg.highlight.treeColumnHeadSelected",""],
+  ["TreeColumnHeadFocus","","c","bg.highlight",""],
+  ["TreeColumnHeadControl","","c","text.dim",""],
+  ["TreeRowCategoryForeground","","c","text.dim.browserDisabledItem",""],
+  ["TreeRowCategoryBackground","","c","ui.transparent.inputCurveOutlineColor","00"],
+  ["BrowserTagBackground","","c","bg.surface.browserTagBackground",""],
+  ["SearchIndication","","c","accent.search",""],
+  ["SearchIndicationStandby","","c","accent.searchStandby",""],
+  ["KeyZoneBackground","","c","sem.keyZone",""],
+  ["KeyZoneCrossfadeRamp","","c","sem.keyZoneRamp",""],
+  ["VelocityZoneBackground","","c","sem.velocityZone",""],
+  ["VelocityZoneCrossfadeRamp","","c","sem.velocity",""],
+  ["SelectorZoneBackground","","c","sem.selectorZone",""],
+  ["SelectorZoneCrossfadeRamp","","c","sem.selectorZoneRamp",""],
+  ["ViewCheckControlEnabledOff","","c","text.dim.viewCheckControlEnabledOff",""],
+  ["ViewCheckControlDisabledOn","","c","text.mid.viewCheckControlDisabledOn",""],
+  ["ViewCheckControlDisabledOff","","c","ui.handle.viewCheckControlDisabledOff",""],
+  ["DefaultBlendFactor","","n","num.DefaultBlendFactor",""],
+  ["IconBlendFactor","","n","num.IconBlendFactor",""],
+  ["ClipBlendFactor","","n","num.ClipBlendFactor",""],
+  ["NoteBorderStandbyBlendFactor","","n","num.NoteBorderStandbyBlendFactor",""],
+  ["RetroDisplayBlendFactor","","n","num.RetroDisplayBlendFactor",""],
+  ["CheckControlNotCheckedBlendFactor","","n","num.CheckControlNotCheckedBlendFactor",""],
+  ["MixSurfaceAreaBlendFactor","","n","num.MixSurfaceAreaBlendFactor",""],
+  ["TextFrameSegmentBlendFactor","","n","num.TextFrameSegmentBlendFactor",""],
+  ["NoteDisabledSelectedBlendFactor","","n","num.NoteDisabledSelectedBlendFactor",""],
+  ["BackgroundClip","","c","ui.handle.backgroundClip",""],
+  ["BackgroundClipFrame","","c","bg.raised.backgroundClipFrame",""],
+  ["WarperTimeBarRulerBackground","","c","bg.raised.warperTimeBarRulerBackground",""],
+  ["WarperTimeBarMarkerBackground","","c","bg.laneIdle.warperTimeBarMarkerBackground",""],
+  ["MinVelocityNoteBlendFactor","","n","num.MinVelocityNoteBlendFactor",""],
+  ["StripedBackgroundShadeFactor","","n","num.StripedBackgroundShadeFactor",""],
+  ["NonEditableAutomationAlpha","","n","num.NonEditableAutomationAlpha",""],
+  ["DisabledContextMenuIconAlpha","","n","num.DisabledContextMenuIconAlpha",""],
+  ["ClipBorderAlpha","","n","num.ClipBorderAlpha",""],
+  ["ScrollBarAlpha","","n","num.ScrollBarAlpha",""],
+  ["ScrollBarOnHoverAlpha","","n","num.ScrollBarOnHoverAlpha",""],
+  ["ScrollBarBackgroundAlpha","","n","num.ScrollBarBackgroundAlpha",""],
+  ["InaudibleTakeLightness","","n","num.InaudibleTakeLightness",""],
+  ["InaudibleTakeSaturation","","n","num.InaudibleTakeSaturation",""],
+  ["InaudibleTakeNameLightness","","n","num.InaudibleTakeNameLightness",""],
+  ["InaudibleTakeNameSaturation","","n","num.InaudibleTakeNameSaturation",""],
+  ["AutomationLaneClipBodyLightness","","n","num.AutomationLaneClipBodyLightness",""],
+  ["AutomationLaneClipBodySaturation","","n","num.AutomationLaneClipBodySaturation",""],
+  ["AutomationLaneHeaderLightness","","n","num.AutomationLaneHeaderLightness",""],
+  ["AutomationLaneHeaderSaturation","","n","num.AutomationLaneHeaderSaturation",""],
+  ["TakeLaneHeaderLightness","","n","num.TakeLaneHeaderLightness",""],
+  ["TakeLaneHeaderSaturation","","n","num.TakeLaneHeaderSaturation",""],
+  ["TakeLaneHeaderNameLightness","","n","num.TakeLaneHeaderNameLightness",""],
+  ["TakeLaneHeaderNameSaturation","","n","num.TakeLaneHeaderNameSaturation",""],
+  ["AutomationLaneHeaderNameLightness","","n","num.AutomationLaneHeaderNameLightness",""],
+  ["AutomationLaneHeaderNameSaturation","","n","num.AutomationLaneHeaderNameSaturation",""],
+  ["ClipContrastColorAdjustment","","n","num.ClipContrastColorAdjustment",""],
+  ["SessionSlotOklabLCompensationFactor","","n","num.SessionSlotOklabLCompensationFactor",""],
+  ["BipolarPotiTriangle","","c","ui.frameDeep.bipolarPotiTriangle",""],
+  ["Poti","","c","ui.frameDeep.bipolarPotiTriangle",""],
+  ["DeactivatedPoti","","c","bg.desktop.deactivatedPoti",""],
+  ["PotiNeedle","","c","bg.deepest",""],
+  ["DeactivatedPotiNeedle","","c","bg.desktop.deactivatedPoti",""],
+  ["PianoBlackKey","","c","bg.highlight.pianoBlackKey",""],
+  ["PianoWhiteKey","","c","text.mid.pianoWhiteKey",""],
+  ["PianoKeySeparator","","c","bg.highlight.pianoKeySeparator",""],
+  ["TransportOffBackground","","c","bg.raised.controlContrastTransport",""],
+  ["TransportOffDisabledForeground","","c","ui.scrollbar.transportOffDisabledForeground",""],
+  ["TransportOffForeground","","c","text.primary",""],
+  ["TransportSelectionBackground","","c","ui.handle",""],
+  ["Modulation","","c","sem.modulation",""],
+  ["ModulationDisabled","","c","sem.modulationOff","a9"],
+  ["ModulationMouseOver","","c","sem.modulationHover",""],
+  ["AutomationTransformToolFrame","","c","ui.toolFrame","bf"],
+  ["AutomationTransformToolFrameActive","","c","grid.automation.automationTransformToolFrameActive",""],
+  ["AutomationTransformToolHandle","","c","ui.toolFrame","bf"],
+  ["AutomationTransformToolHandleActive","","c","grid.automation.automationTransformToolFrameActive",""],
+  ["MutedAuditionClip","","c","ui.faint.mutedAuditionClip",""],
+  ["LinkedTrackHover","","c","accent.linked",""],
+  ["ExpressionLaneHeaderHighlight","","c","bg.detail.takeLaneTrackHighlighted",""],
+  ["DeactivatedClipHeader","","c","wave.dimmed.deactivatedClipHeader","df"],
+  ["DeactivatedClipHeaderForeground","","c","bg.desktop.deactivatedClipHeaderForeground",""],
+  ["ScaleAwareness","","c","sem.scale",""],
+  ["OnlyMinimumToMaximum","StandardVuMeter","b","meter.Standard.OnlyMinimumToMaximum",""],
+  ["Maximum","StandardVuMeter","c","meter.Standard.Maximum",""],
+  ["AboveZeroDecibel","StandardVuMeter","c","meter.Standard.AboveZeroDecibel",""],
+  ["ZeroDecibel","StandardVuMeter","c","meter.Standard.ZeroDecibel",""],
+  ["BelowZeroDecibel1","StandardVuMeter","c","meter.Standard.BelowZeroDecibel1",""],
+  ["BelowZeroDecibel2","StandardVuMeter","c","meter.Standard.BelowZeroDecibel2",""],
+  ["Minimum","StandardVuMeter","c","meter.Standard.Minimum",""],
+  ["OnlyMinimumToMaximum","OverloadVuMeter","b","meter.Overload.OnlyMinimumToMaximum",""],
+  ["Maximum","OverloadVuMeter","c","meter.Overload.Maximum",""],
+  ["AboveZeroDecibel","OverloadVuMeter","c","meter.Overload.AboveZeroDecibel",""],
+  ["ZeroDecibel","OverloadVuMeter","c","meter.Overload.ZeroDecibel",""],
+  ["BelowZeroDecibel1","OverloadVuMeter","c","meter.Overload.BelowZeroDecibel1",""],
+  ["BelowZeroDecibel2","OverloadVuMeter","c","meter.Overload.BelowZeroDecibel2",""],
+  ["Minimum","OverloadVuMeter","c","meter.Overload.Minimum",""],
+  ["OnlyMinimumToMaximum","DisabledVuMeter","b","meter.Disabled.OnlyMinimumToMaximum",""],
+  ["Maximum","DisabledVuMeter","c","meter.Disabled.Maximum",""],
+  ["AboveZeroDecibel","DisabledVuMeter","c","meter.Disabled.AboveZeroDecibel",""],
+  ["ZeroDecibel","DisabledVuMeter","c","meter.Disabled.ZeroDecibel",""],
+  ["BelowZeroDecibel1","DisabledVuMeter","c","meter.Disabled.BelowZeroDecibel1",""],
+  ["BelowZeroDecibel2","DisabledVuMeter","c","meter.Disabled.BelowZeroDecibel2",""],
+  ["Minimum","DisabledVuMeter","c","meter.Disabled.Minimum",""],
+  ["OnlyMinimumToMaximum","HeadphonesVuMeter","b","meter.Headphones.OnlyMinimumToMaximum",""],
+  ["Maximum","HeadphonesVuMeter","c","meter.Headphones.Maximum",""],
+  ["AboveZeroDecibel","HeadphonesVuMeter","c","meter.Headphones.AboveZeroDecibel",""],
+  ["ZeroDecibel","HeadphonesVuMeter","c","meter.Headphones.ZeroDecibel",""],
+  ["BelowZeroDecibel1","HeadphonesVuMeter","c","meter.Headphones.BelowZeroDecibel1",""],
+  ["BelowZeroDecibel2","HeadphonesVuMeter","c","meter.Headphones.BelowZeroDecibel2",""],
+  ["Minimum","HeadphonesVuMeter","c","meter.Headphones.Minimum",""],
+  ["OnlyMinimumToMaximum","SendsOnlyVuMeter","b","meter.SendsOnly.OnlyMinimumToMaximum",""],
+  ["Maximum","SendsOnlyVuMeter","c","meter.SendsOnly.Maximum",""],
+  ["AboveZeroDecibel","SendsOnlyVuMeter","c","meter.SendsOnly.AboveZeroDecibel",""],
+  ["ZeroDecibel","SendsOnlyVuMeter","c","meter.SendsOnly.ZeroDecibel",""],
+  ["BelowZeroDecibel1","SendsOnlyVuMeter","c","meter.SendsOnly.BelowZeroDecibel1",""],
+  ["BelowZeroDecibel2","SendsOnlyVuMeter","c","meter.SendsOnly.BelowZeroDecibel2",""],
+  ["Minimum","SendsOnlyVuMeter","c","meter.SendsOnly.Minimum",""],
+  ["OnlyMinimumToMaximum","BipolarGainReductionVuMeter","b","meter.BipolarGainReduction.OnlyMinimumToMaximum",""],
+  ["Maximum","BipolarGainReductionVuMeter","c","meter.BipolarGainReduction.Maximum",""],
+  ["AboveZeroDecibel","BipolarGainReductionVuMeter","c","meter.BipolarGainReduction.AboveZeroDecibel",""],
+  ["ZeroDecibel","BipolarGainReductionVuMeter","c","meter.BipolarGainReduction.ZeroDecibel",""],
+  ["BelowZeroDecibel1","BipolarGainReductionVuMeter","c","meter.BipolarGainReduction.BelowZeroDecibel1",""],
+  ["BelowZeroDecibel2","BipolarGainReductionVuMeter","c","meter.BipolarGainReduction.BelowZeroDecibel2",""],
+  ["Minimum","BipolarGainReductionVuMeter","c","meter.BipolarGainReduction.Minimum",""],
+  ["OnlyMinimumToMaximum","OrangeVuMeter","b","meter.Orange.OnlyMinimumToMaximum",""],
+  ["Maximum","OrangeVuMeter","c","meter.Orange.Maximum",""],
+  ["AboveZeroDecibel","OrangeVuMeter","c","meter.Orange.AboveZeroDecibel",""],
+  ["ZeroDecibel","OrangeVuMeter","c","meter.Orange.ZeroDecibel",""],
+  ["BelowZeroDecibel1","OrangeVuMeter","c","meter.Orange.BelowZeroDecibel1",""],
+  ["BelowZeroDecibel2","OrangeVuMeter","c","meter.Orange.BelowZeroDecibel2",""],
+  ["Minimum","OrangeVuMeter","c","meter.Orange.Minimum",""],
+  ["MainViewFocusIndicator","","c","text.dim.mainViewFocusIndicator",""],
+  ["MidiEditorBlackKeyBackground","","c","midi.blackKeyBg","26"],
+  ["MidiEditorBackgroundWhiteKeySeparator","","c","midi.keySep","19"],
+  ["RangeEditField3","","c","field.edit3",""],
+  ["ScrollbarInnerHandleHover","","c","text.dim.browserDisabledItem",""],
+  ["ScrollbarInnerTrackHover","","c","bg.surface.scrollbarInnerTrackHover",""],
+  ["ScrollbarLCDHandleHover","","c","text.dim.scrollbarLCDHandleHover",""],
+  ["ScrollbarLCDTrackHover","","c","bg.highlight.scrollbarLCDTrackHover",""],
+  ["ScrollbarMixerShowOnScrollHandleHover","","c","ui.shadeMed","7f"],
+  ["RetroDisplayControlSelectionFrame","","c","ui.handle",""],
+  ["ThresholdLineColorHover","","c","accent.hover",""],
+  ["SecondarySelectionForeground","","c","ui.shadeMed.secondarySelectionForeground","7f"]
+];
+
+// role -> { d: dark-mode L, l: light-mode L, t: neutral|colour }
+// L is OKLab lightness 0..1, the positional structure each mode expects.
+var ROLE_L = {"accent.hover": {"d": 0.6623,"l": 0.6623,"t": "colour"},"accent.linked": {"d": 0.8513,"l": 0.8513,"t": "colour"},"accent.primary": {"d": 0.8114,"l": 0.829,"t": "colour"},"accent.search": {"d": 0.8493,"l": 0.9071,"t": "colour"},"accent.searchStandby": {"d": 0.7536,"l": 0.7536,"t": "colour"},"accent.secondary": {"d": 0.7467,"l": 0.8653,"t": "colour"},"bg.control": {"d": 0.2365,"l": 0.8547,"t": "neutral"},"bg.control.clipSlotButton": {"d": 0.2365,"l": 0.472,"t": "neutral"},"bg.deepest": {"d": 0.2101,"l": 0.2608,"t": "neutral"},"bg.deepest.displayBackground": {"d": 0.2101,"l": 0.472,"t": "neutral"},"bg.desktop": {"d": 0.2858,"l": 0.6039,"t": "neutral"},"bg.desktop.clipBorder": {"d": 0.2858,"l": 0.0,"t": "neutral"},"bg.desktop.deactivatedClipHeaderForeground": {"d": 0.2858,"l": 0.7953,"t": "neutral"},"bg.desktop.deactivatedPoti": {"d": 0.2858,"l": 0.5381,"t": "neutral"},"bg.desktop.sceneContrast": {"d": 0.2858,"l": 0.5004,"t": "neutral"},"bg.detail": {"d": 0.3624,"l": 0.8271,"t": "neutral"},"bg.detail.retroDisplayBackgroundLine": {"d": 0.3624,"l": 0.472,"t": "neutral"},"bg.detail.takeLaneTrackHighlighted": {"d": 0.3624,"l": 0.7953,"t": "neutral"},"bg.highlight": {"d": 0.3928,"l": 0.7953,"t": "neutral"},"bg.highlight.drumRackScroller1": {"d": 0.3928,"l": 0.6304,"t": "neutral"},"bg.highlight.pianoBlackKey": {"d": 0.3928,"l": 0.4652,"t": "neutral"},"bg.highlight.pianoKeySeparator": {"d": 0.3928,"l": 0.7215,"t": "neutral"},"bg.highlight.scrollbarLCDTrackHover": {"d": 0.3928,"l": 0.4289,"t": "neutral"},"bg.highlight.treeColumnHeadSelected": {"d": 0.3928,"l": 0.8547,"t": "neutral"},"bg.highlight.viewControlOff": {"d": 0.3928,"l": 0.7215,"t": "neutral"},"bg.laneIdle": {"d": 0.3078,"l": 0.6905,"t": "neutral"},"bg.laneIdle.warperTimeBarMarkerBackground": {"d": 0.3078,"l": 0.6602,"t": "neutral"},"bg.raised": {"d": 0.3315,"l": 0.3602,"t": "neutral"},"bg.raised.backgroundClipFrame": {"d": 0.3315,"l": 0.5381,"t": "neutral"},"bg.raised.controlContrastTransport": {"d": 0.3315,"l": 0.7215,"t": "neutral"},"bg.raised.preferencesTab": {"d": 0.3315,"l": 0.7215,"t": "neutral"},"bg.raised.warperTimeBarRulerBackground": {"d": 0.3315,"l": 0.6234,"t": "neutral"},"bg.surface": {"d": 0.2622,"l": 0.5381,"t": "neutral"},"bg.surface.browserTagBackground": {"d": 0.2622,"l": 0.7953,"t": "neutral"},"bg.surface.controlOnDisabledForeground": {"d": 0.2622,"l": 0.183,"t": "neutral"},"bg.surface.controlTextBack": {"d": 0.2622,"l": 0.904,"t": "neutral"},"bg.surface.scrollbarInnerTrackHover": {"d": 0.2622,"l": 0.6039,"t": "neutral"},"brand.ableton": {"d": 0.8664,"l": 0.8664,"t": "colour"},"clip.1": {"d": 0.5787,"l": 0.5787,"t": "colour"},"clip.10": {"d": 0.7016,"l": 0.7016,"t": "colour"},"clip.11": {"d": 0.6101,"l": 0.6101,"t": "colour"},"clip.12": {"d": 0.6429,"l": 0.6429,"t": "colour"},"clip.13": {"d": 0.7682,"l": 0.7682,"t": "colour"},"clip.14": {"d": 0.9353,"l": 0.9353,"t": "colour"},"clip.15": {"d": 0.9257,"l": 0.9257,"t": "neutral"},"clip.16": {"d": 0.7058,"l": 0.7058,"t": "neutral"},"clip.2": {"d": 0.6613,"l": 0.6613,"t": "colour"},"clip.3": {"d": 0.8202,"l": 0.8202,"t": "colour"},"clip.4": {"d": 0.7579,"l": 0.7579,"t": "colour"},"clip.5": {"d": 0.7026,"l": 0.7026,"t": "colour"},"clip.6": {"d": 0.7844,"l": 0.7844,"t": "colour"},"clip.7": {"d": 0.7091,"l": 0.7091,"t": "colour"},"clip.8": {"d": 0.5816,"l": 0.5816,"t": "colour"},"clip.9": {"d": 0.5515,"l": 0.5515,"t": "colour"},"curve.output": {"d": 0.6208,"l": 0.8541,"t": "neutral"},"curve.outputLine": {"d": 0.8063,"l": 0.8547,"t": "neutral"},"display.handle2": {"d": 0.7132,"l": 0.7207,"t": "colour"},"field.edit1": {"d": 0.5096,"l": 0.7659,"t": "colour"},"field.edit2": {"d": 0.4991,"l": 0.7207,"t": "colour"},"field.edit3": {"d": 0.4867,"l": 0.7894,"t": "colour"},"grid.automation": {"d": 0.1467,"l": 0.183,"t": "neutral"},"grid.automation.automationTransformToolFrameActive": {"d": 0.1467,"l": 0.2608,"t": "neutral"},"grid.guideOff": {"d": 0.7735,"l": 0.1869,"t": "neutral"},"grid.label": {"d": 0.7739,"l": 0.3572,"t": "neutral"},"grid.line": {"d": 0.124,"l": 0.1771,"t": "neutral"},"grid.loopOff": {"d": 0.6177,"l": 0.2804,"t": "neutral"},"grid.spectrum": {"d": 0.7673,"l": 0.7244,"t": "neutral"},"grid.tiles": {"d": 0.1505,"l": 0.177,"t": "colour"},"learn.key": {"d": 0.6933,"l": 0.6933,"t": "colour"},"learn.macro": {"d": 0.773,"l": 0.773,"t": "colour"},"learn.midi": {"d": 0.4877,"l": 0.4877,"t": "colour"},"meter.BipolarGainReduction.AboveZeroDecibel": {"d": 0.5808,"l": 0.5808,"t": "colour"},"meter.BipolarGainReduction.BelowZeroDecibel1": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.BipolarGainReduction.BelowZeroDecibel2": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.BipolarGainReduction.Maximum": {"d": 0.5808,"l": 0.5808,"t": "colour"},"meter.BipolarGainReduction.Minimum": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.BipolarGainReduction.ZeroDecibel": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.Disabled.AboveZeroDecibel": {"d": 0.8731,"l": 0.8731,"t": "colour"},"meter.Disabled.BelowZeroDecibel1": {"d": 0.5931,"l": 0.5931,"t": "neutral"},"meter.Disabled.BelowZeroDecibel2": {"d": 0.5829,"l": 0.5829,"t": "neutral"},"meter.Disabled.Maximum": {"d": 0.6299,"l": 0.6299,"t": "colour"},"meter.Disabled.Minimum": {"d": 0.5382,"l": 0.5382,"t": "neutral"},"meter.Disabled.ZeroDecibel": {"d": 0.6066,"l": 0.6066,"t": "neutral"},"meter.Headphones.AboveZeroDecibel": {"d": 0.7437,"l": 0.7437,"t": "colour"},"meter.Headphones.BelowZeroDecibel1": {"d": 0.7685,"l": 0.7685,"t": "colour"},"meter.Headphones.BelowZeroDecibel2": {"d": 0.7958,"l": 0.7958,"t": "colour"},"meter.Headphones.Maximum": {"d": 0.7509,"l": 0.7509,"t": "colour"},"meter.Headphones.Minimum": {"d": 0.9057,"l": 0.9057,"t": "colour"},"meter.Headphones.ZeroDecibel": {"d": 0.7437,"l": 0.7437,"t": "colour"},"meter.Orange.AboveZeroDecibel": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.Orange.BelowZeroDecibel1": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.Orange.BelowZeroDecibel2": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.Orange.Maximum": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.Orange.Minimum": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.Orange.ZeroDecibel": {"d": 0.7932,"l": 0.7932,"t": "colour"},"meter.Overload.AboveZeroDecibel": {"d": 1.0,"l": 1.0,"t": "neutral"},"meter.Overload.BelowZeroDecibel1": {"d": 1.0,"l": 1.0,"t": "neutral"},"meter.Overload.BelowZeroDecibel2": {"d": 1.0,"l": 1.0,"t": "neutral"},"meter.Overload.Maximum": {"d": 0.6299,"l": 0.6299,"t": "colour"},"meter.Overload.Minimum": {"d": 0.477,"l": 0.477,"t": "colour"},"meter.Overload.ZeroDecibel": {"d": 1.0,"l": 1.0,"t": "neutral"},"meter.SendsOnly.AboveZeroDecibel": {"d": 0.8061,"l": 0.8061,"t": "colour"},"meter.SendsOnly.BelowZeroDecibel1": {"d": 0.5935,"l": 0.5935,"t": "colour"},"meter.SendsOnly.BelowZeroDecibel2": {"d": 0.5935,"l": 0.5935,"t": "colour"},"meter.SendsOnly.Maximum": {"d": 0.8061,"l": 0.8061,"t": "colour"},"meter.SendsOnly.Minimum": {"d": 0.5935,"l": 0.5935,"t": "colour"},"meter.SendsOnly.ZeroDecibel": {"d": 0.5935,"l": 0.5935,"t": "colour"},"meter.Standard.AboveZeroDecibel": {"d": 0.6299,"l": 0.6299,"t": "colour"},"meter.Standard.BelowZeroDecibel1": {"d": 0.875,"l": 0.875,"t": "colour"},"meter.Standard.BelowZeroDecibel2": {"d": 0.8499,"l": 0.8499,"t": "colour"},"meter.Standard.Maximum": {"d": 0.6299,"l": 0.6299,"t": "colour"},"meter.Standard.Minimum": {"d": 0.8499,"l": 0.8499,"t": "colour"},"meter.Standard.ZeroDecibel": {"d": 0.6299,"l": 0.6299,"t": "colour"},"midi.blackKeyBg": {"d": 0.1286,"l": 0.2579,"t": "neutral"},"midi.keySep": {"d": 0.1448,"l": 0.355,"t": "neutral"},"op.1": {"d": 0.8615,"l": 0.8615,"t": "colour"},"op.2": {"d": 0.7933,"l": 0.7933,"t": "colour"},"op.3": {"d": 0.6099,"l": 0.6099,"t": "colour"},"op.4": {"d": 0.6994,"l": 0.6994,"t": "colour"},"sel.background": {"d": 0.8703,"l": 0.9512,"t": "colour"},"sel.backgroundContrast": {"d": 0.6521,"l": 0.8327,"t": "colour"},"sel.standby": {"d": 0.5749,"l": 0.808,"t": "colour"},"sem.alert": {"d": 0.6677,"l": 0.7307,"t": "colour"},"sem.automation": {"d": 0.6722,"l": 0.6202,"t": "colour"},"sem.automationHover": {"d": 0.7697,"l": 0.4122,"t": "colour"},"sem.automationOff": {"d": 0.5032,"l": 0.464,"t": "neutral"},"sem.freeze": {"d": 0.6479,"l": 0.6479,"t": "colour"},"sem.keyZone": {"d": 0.9078,"l": 0.9078,"t": "colour"},"sem.keyZoneRamp": {"d": 0.7014,"l": 0.7014,"t": "colour"},"sem.modulation": {"d": 0.6284,"l": 0.5935,"t": "colour"},"sem.modulationHover": {"d": 0.9324,"l": 0.4515,"t": "colour"},"sem.modulationOff": {"d": 0.7567,"l": 0.7136,"t": "colour"},"sem.play": {"d": 0.7652,"l": 0.8686,"t": "colour"},"sem.preListen": {"d": 0.5299,"l": 0.6013,"t": "colour"},"sem.record": {"d": 0.6828,"l": 0.6881,"t": "colour"},"sem.recordArm": {"d": 0.628,"l": 0.628,"t": "colour"},"sem.scale": {"d": 0.7398,"l": 0.7545,"t": "colour"},"sem.selectorZone": {"d": 0.868,"l": 0.868,"t": "colour"},"sem.selectorZoneRamp": {"d": 0.5348,"l": 0.5348,"t": "colour"},"sem.velocity": {"d": 0.6445,"l": 0.6445,"t": "colour"},"sem.velocityZone": {"d": 0.8029,"l": 0.8029,"t": "colour"},"text.dim": {"d": 0.5648,"l": 0.5381,"t": "neutral"},"text.dim.browserDisabledItem": {"d": 0.5648,"l": 0.4289,"t": "neutral"},"text.dim.controlDisabled": {"d": 0.5648,"l": 0.9579,"t": "neutral"},"text.dim.mainViewFocusIndicator": {"d": 0.5648,"l": 0.3602,"t": "neutral"},"text.dim.scrollbarLCDHandleHover": {"d": 0.5648,"l": 0.472,"t": "neutral"},"text.dim.selectionFrame": {"d": 0.5648,"l": 0.3602,"t": "neutral"},"text.dim.viewCheckControlEnabledOff": {"d": 0.5648,"l": 0.2608,"t": "neutral"},"text.mid": {"d": 0.6198,"l": 0.5381,"t": "neutral"},"text.mid.pianoWhiteKey": {"d": 0.6198,"l": 0.9579,"t": "neutral"},"text.mid.retroDisplayForegroundDisabled": {"d": 0.6198,"l": 0.7215,"t": "neutral"},"text.mid.retroDisplayScaleText": {"d": 0.6198,"l": 0.8547,"t": "neutral"},"text.mid.viewCheckControlDisabledOn": {"d": 0.6198,"l": 0.904,"t": "neutral"},"text.onAccent": {"d": 0.1246,"l": 0.183,"t": "neutral"},"text.onClip": {"d": 0.0,"l": 0.0,"t": "neutral"},"text.primary": {"d": 0.7719,"l": 0.183,"t": "neutral"},"text.primary.gridGuideline": {"d": 0.7719,"l": 0.183,"t": "neutral"},"text.primary.retroDisplayTitle": {"d": 0.7719,"l": 0.8547,"t": "neutral"},"text.primary.treeColumnHeadForeground": {"d": 0.7719,"l": 0.3602,"t": "neutral"},"text.ruler": {"d": 0.6564,"l": 0.3602,"t": "neutral"},"text.ruler.arrangementRulerMarkings": {"d": 0.6564,"l": 0.3602,"t": "neutral"},"text.ruler.controlSelectionFrame": {"d": 0.6564,"l": 0.4289,"t": "neutral"},"ui.faint": {"d": 0.499,"l": 0.5004,"t": "neutral"},"ui.faint.mutedAuditionClip": {"d": 0.499,"l": 0.6905,"t": "neutral"},"ui.frameDeep": {"d": 0.1783,"l": 0.4289,"t": "neutral"},"ui.frameDeep.bipolarPotiTriangle": {"d": 0.1783,"l": 0.2608,"t": "neutral"},"ui.handle": {"d": 0.4773,"l": 0.8547,"t": "neutral"},"ui.handle.backgroundClip": {"d": 0.4773,"l": 0.6304,"t": "neutral"},"ui.handle.browserBarOverlayHintTextColor": {"d": 0.4773,"l": 0.4289,"t": "neutral"},"ui.handle.viewCheckControlDisabledOff": {"d": 0.4773,"l": 0.5381,"t": "neutral"},"ui.scrollbar": {"d": 0.5232,"l": 0.472,"t": "neutral"},"ui.scrollbar.controlOffDisabledForeground": {"d": 0.5232,"l": 0.5381,"t": "neutral"},"ui.scrollbar.scrollbarLCDHandle": {"d": 0.5232,"l": 0.4289,"t": "neutral"},"ui.scrollbar.transportOffDisabledForeground": {"d": 0.5232,"l": 0.5381,"t": "neutral"},"ui.shadeMed": {"d": 0.0,"l": 0.0,"t": "neutral"},"ui.shadeMed.secondarySelectionForeground": {"d": 0.0,"l": 0.0,"t": "neutral"},"ui.shadeSoft": {"d": 0.0,"l": 0.0,"t": "neutral"},"ui.shadowDark": {"d": 0.2617,"l": 0.1835,"t": "neutral"},"ui.shadowLight": {"d": 0.2885,"l": 0.6325,"t": "neutral"},"ui.spectrum": {"d": 0.4449,"l": 0.7956,"t": "neutral"},"ui.toolFrame": {"d": 0.2832,"l": 0.2603,"t": "neutral"},"ui.transparent": {"d": 0.0,"l": 0.0,"t": "neutral"},"ui.transparent.inputCurveOutlineColor": {"d": 0.0,"l": 0.0,"t": "neutral"},"wave.dimmed": {"d": 0.5232,"l": 0.4652,"t": "neutral"},"wave.dimmed.deactivatedClipHeader": {"d": 0.5232,"l": 0.472,"t": "neutral"},"wave.main": {"d": 0.2073,"l": 0.2492,"t": "neutral"}};
+
+
+/* ── src/palette.js ── */
+/* ── Base palette ──────────────────────────────────────────────────────────
+   Hue (OKLCH degrees) and chroma for every non-neutral role. Lightness is NOT
+   here: it comes from ROLE_L, which carries the positional structure each mode
+   needs. These h/c values are ours, chosen for the meaning of each role.
+
+   Neutral roles (chassis, text, scrollbars, grids) aren't listed — they take
+   the theme's own background hue at low chroma.                             */
+
+var PALETTE = {
+  /* Accents — overridden per theme via ACCENT_SLOTS, these are the fallbacks. */
+  'accent.primary':        { h:  65, c: 0.140 },
+  'accent.secondary':      { h: 207, c: 0.128 },
+  'accent.hover':          { h: 264, c: 0.150 },
+  'accent.linked':         { h: 235, c: 0.055 },
+  'accent.search':         { h:  88, c: 0.105 },
+  'accent.searchStandby':  { h:  88, c: 0.085 },
+  'display.handle2':       { h:  10, c: 0.130 },
+
+  /* Selection — a tinted wash behind selected material. */
+  'sel.background':         { h: 220, c: 0.055 },
+  'sel.backgroundContrast': { h: 220, c: 0.045 },
+  'sel.standby':            { h: 220, c: 0.040 },
+
+  /* Transport / clip semantics. Producers read these by colour at a glance,
+     so they keep their conventional meaning unless the theme opts into rehue. */
+  'sem.record':          { h:  25, c: 0.190 },
+  'sem.recordArm':       { h:  29, c: 0.240 },
+  'sem.play':            { h: 160, c: 0.172 },
+  'sem.preListen':       { h: 264, c: 0.115 },
+  'sem.alert':           { h:  45, c: 0.150 },
+  'sem.freeze':          { h: 250, c: 0.130 },
+  'sem.scale':           { h: 300, c: 0.130 },
+
+  /* Modulation and automation overlays in device and arrangement views. */
+  'sem.modulation':      { h: 205, c: 0.110 },
+  'sem.modulationOff':   { h: 205, c: 0.055 },
+  'sem.modulationHover': { h: 195, c: 0.130 },
+  'sem.automation':      { h:  28, c: 0.185 },
+  'sem.automationHover': { h:  28, c: 0.120 },
+  'sem.automationOff':   { h:  28, c: 0.000 },
+
+  /* MIDI editor zones. */
+  'sem.velocity':         { h:  28, c: 0.165 },
+  'sem.velocityZone':     { h:  28, c: 0.080 },
+  'sem.keyZone':          { h: 150, c: 0.085 },
+  'sem.keyZoneRamp':      { h: 150, c: 0.150 },
+  'sem.selectorZone':     { h: 258, c: 0.070 },
+  'sem.selectorZoneRamp': { h: 264, c: 0.170 },
+
+  /* MIDI/key/macro mapping modes. Deliberately loud and mutually distinct —
+     these only appear while mapping, and being unmissable is the point. */
+  'learn.midi':  { h: 275, c: 0.260 },
+  'learn.key':   { h:  45, c: 0.200 },
+  'learn.macro': { h: 145, c: 0.230 },
+
+  /* Operator's four oscillators — must stay distinguishable from each other. */
+  'op.1': { h: 100, c: 0.160 },
+  'op.2': { h: 185, c: 0.140 },
+  'op.3': { h: 275, c: 0.170 },
+  'op.4': { h:  50, c: 0.180 },
+
+  /* Range edit fields. */
+  'field.edit1': { h: 200, c: 0.090 },
+  'field.edit2': { h:   5, c: 0.090 },
+  'field.edit3': { h:  60, c: 0.080 },
+
+  'grid.tiles':     { h: 264, c: 0.020 },
+  'brand.ableton':  { h: 145, c: 0.290 },
+
+  /* VU meters. Ramp runs Maximum (top) → Minimum (bottom). Standard goes
+     green→yellow→red so clipping stays legible in any theme. */
+  'meter.Standard.Maximum':           { h:  29, c: 0.250 },
+  'meter.Standard.AboveZeroDecibel':  { h:  29, c: 0.250 },
+  'meter.Standard.ZeroDecibel':       { h:  29, c: 0.250 },
+  'meter.Standard.BelowZeroDecibel1': { h:  95, c: 0.180 },
+  'meter.Standard.BelowZeroDecibel2': { h: 150, c: 0.200 },
+  'meter.Standard.Minimum':           { h: 150, c: 0.200 },
+
+  'meter.Orange.Maximum':           { h: 65, c: 0.175 },
+  'meter.Orange.AboveZeroDecibel':  { h: 65, c: 0.175 },
+  'meter.Orange.ZeroDecibel':       { h: 65, c: 0.175 },
+  'meter.Orange.BelowZeroDecibel1': { h: 65, c: 0.175 },
+  'meter.Orange.BelowZeroDecibel2': { h: 65, c: 0.175 },
+  'meter.Orange.Minimum':           { h: 65, c: 0.175 },
+
+  'meter.Overload.Maximum':           { h: 29, c: 0.250 },
+  'meter.Overload.Minimum':           { h: 29, c: 0.200 },
+
+  'meter.Headphones.Maximum':           { h: 285, c: 0.140 },
+  'meter.Headphones.AboveZeroDecibel':  { h: 268, c: 0.110 },
+  'meter.Headphones.ZeroDecibel':       { h: 268, c: 0.110 },
+  'meter.Headphones.BelowZeroDecibel1': { h: 250, c: 0.110 },
+  'meter.Headphones.BelowZeroDecibel2': { h: 230, c: 0.120 },
+  'meter.Headphones.Minimum':           { h: 195, c: 0.150 },
+
+  'meter.SendsOnly.Maximum':           { h: 105, c: 0.170 },
+  'meter.SendsOnly.AboveZeroDecibel':  { h: 105, c: 0.170 },
+  'meter.SendsOnly.ZeroDecibel':       { h: 280, c: 0.190 },
+  'meter.SendsOnly.BelowZeroDecibel1': { h: 280, c: 0.190 },
+  'meter.SendsOnly.BelowZeroDecibel2': { h: 280, c: 0.190 },
+  'meter.SendsOnly.Minimum':           { h: 280, c: 0.190 },
+
+  'meter.BipolarGainReduction.Maximum':           { h: 258, c: 0.110 },
+  'meter.BipolarGainReduction.AboveZeroDecibel':  { h: 258, c: 0.110 },
+  'meter.BipolarGainReduction.ZeroDecibel':       { h:  65, c: 0.175 },
+  'meter.BipolarGainReduction.BelowZeroDecibel1': { h:  65, c: 0.175 },
+  'meter.BipolarGainReduction.BelowZeroDecibel2': { h:  65, c: 0.175 },
+  'meter.BipolarGainReduction.Minimum':           { h:  65, c: 0.175 }
+};
+
+/* Roles driven directly by the theme's two accent choices. */
+var ACCENT_SLOTS = {
+  'accent.primary': 'accent',
+  'accent.secondary': 'accent2',
+  'accent.search': 'accent',
+  'accent.searchStandby': 'accent'
+};
+
+/* ── Numeric + boolean entries ─────────────────────────────────────────────
+   Blend factors, alphas and the lightness/saturation scalars Live applies to
+   generated colours. These genuinely differ between light and dark themes —
+   using dark values in a light theme makes clips and lane headers look wrong —
+   so each mode gets its own set and we interpolate on the way out.           */
+
+var NUMERIC = {
+  dark: {
+    DefaultBlendFactor: 0.757, ClipBlendFactor: 0.758, TextFrameSegmentBlendFactor: 0.395,
+    StripedBackgroundShadeFactor: 0.9, ClipBorderAlpha: 120,
+    InaudibleTakeLightness: 0.322, InaudibleTakeSaturation: 0.775,
+    InaudibleTakeNameLightness: 0.8, InaudibleTakeNameSaturation: 0.854,
+    AutomationLaneClipBodyLightness: 0.26, AutomationLaneClipBodySaturation: 0.806,
+    AutomationLaneHeaderLightness: 0.251, AutomationLaneHeaderSaturation: 0.534,
+    TakeLaneHeaderLightness: 0.48, TakeLaneHeaderSaturation: 0.9,
+    TakeLaneHeaderNameLightness: 0.85, TakeLaneHeaderNameSaturation: 0.9,
+    AutomationLaneHeaderNameLightness: 0.709, AutomationLaneHeaderNameSaturation: 0.9,
+    ClipContrastColorAdjustment: 24, SessionSlotOklabLCompensationFactor: 20
+  },
+  light: {
+    DefaultBlendFactor: 0.744, ClipBlendFactor: 0.715, TextFrameSegmentBlendFactor: 0.321,
+    StripedBackgroundShadeFactor: 0.818, ClipBorderAlpha: 112,
+    InaudibleTakeLightness: 0.5, InaudibleTakeSaturation: 0.5,
+    InaudibleTakeNameLightness: 0.75, InaudibleTakeNameSaturation: 0.75,
+    AutomationLaneClipBodyLightness: 0.44, AutomationLaneClipBodySaturation: 0.66,
+    AutomationLaneHeaderLightness: 0.44, AutomationLaneHeaderSaturation: 0.66,
+    TakeLaneHeaderLightness: 0.5, TakeLaneHeaderSaturation: 0.5,
+    TakeLaneHeaderNameLightness: 0.75, TakeLaneHeaderNameSaturation: 0.623,
+    AutomationLaneHeaderNameLightness: 0.75, AutomationLaneHeaderNameSaturation: 0.623,
+    ClipContrastColorAdjustment: 32, SessionSlotOklabLCompensationFactor: 50
+  },
+  // Identical in every built-in theme, so not mode-dependent.
+  fixed: {
+    IconBlendFactor: 0.73, NoteBorderStandbyBlendFactor: 0.536, RetroDisplayBlendFactor: 1,
+    CheckControlNotCheckedBlendFactor: 0.5, MixSurfaceAreaBlendFactor: 0.375,
+    NoteDisabledSelectedBlendFactor: 0.5, MinVelocityNoteBlendFactor: 0.264,
+    NonEditableAutomationAlpha: 127, DisabledContextMenuIconAlpha: 85,
+    ScrollBarAlpha: 255, ScrollBarOnHoverAlpha: 255, ScrollBarBackgroundAlpha: 255
+  },
+  // Draw a single flat colour from minimum to maximum instead of a ramp.
+  flatMeters: ['OverloadVuMeter', 'OrangeVuMeter']
+};
+
+var INT_KEYS = ['ClipBorderAlpha', 'ClipContrastColorAdjustment',
+  'SessionSlotOklabLCompensationFactor', 'NonEditableAutomationAlpha',
+  'DisabledContextMenuIconAlpha', 'ScrollBarAlpha', 'ScrollBarOnHoverAlpha',
+  'ScrollBarBackgroundAlpha'];
+
+function numericSet(spec) {
+  var out = {}, t = spec.mode === 'light' ? 1 : 0, k;
+  for (k in NUMERIC.fixed) out[k] = NUMERIC.fixed[k];
+  for (k in NUMERIC.dark) {
+    var v = NUMERIC.dark[k] + (NUMERIC.light[k] - NUMERIC.dark[k]) * t;
+    out[k] = INT_KEYS.indexOf(k) >= 0 ? Math.round(v) : Math.round(v * 1e6) / 1e6;
+  }
+  for (var i = 0; i < SCHEMA.length; i++) {
+    if (SCHEMA[i][2] !== 'b') continue;
+    var g = SCHEMA[i][1];
+    out[SCHEMA[i][0] + '@' + g] = NUMERIC.flatMeters.indexOf(g) >= 0 ? 'true' : 'false';
+  }
+  return out;
+}
+
+
+/* ── src/engine.js ── */
+/* ── Colour: sRGB ⇄ OKLCH ───────────────────────────────────────────────────
+   Live itself works in OKLab (it ships SessionSlotOklabLCompensationFactor),
+   so re-hueing in OKLCH is what keeps contrast and hierarchy intact.        */
+
+function srgbToLinear(c) { return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+function linearToSrgb(c) { return c <= 0.0031308 ? c * 12.92 : 1.055 * Math.pow(c, 1 / 2.4) - 0.055; }
+
+function hexToOklch(hex) {
+  var h = hex.replace('#', '');
+  var r = srgbToLinear(parseInt(h.slice(0, 2), 16) / 255),
+      g = srgbToLinear(parseInt(h.slice(2, 4), 16) / 255),
+      b = srgbToLinear(parseInt(h.slice(4, 6), 16) / 255);
+  var l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b),
+      m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b),
+      s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  var L = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+      A = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+      B = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
+  return { L: L, C: Math.hypot(A, B), H: (Math.atan2(B, A) * 180 / Math.PI + 360) % 360 };
+}
+
+function oklchToRgbRaw(L, C, H) {
+  var hr = H * Math.PI / 180, A = C * Math.cos(hr), B = C * Math.sin(hr);
+  var l = Math.pow(L + 0.3963377774 * A + 0.2158037573 * B, 3),
+      m = Math.pow(L - 0.1055613458 * A - 0.0638541728 * B, 3),
+      s = Math.pow(L - 0.0894841775 * A - 1.2914855480 * B, 3);
+  return [ 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+          -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+          -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s];
+}
+
+function inGamut(rgb) {
+  for (var i = 0; i < 3; i++) if (rgb[i] < -1e-4 || rgb[i] > 1 + 1e-4) return false;
+  return true;
+}
+
+/* Clip to sRGB by binary-searching chroma down. Preserves L and H, so a colour
+   pushed out of gamut desaturates rather than shifting hue or going muddy. */
+function oklchToHex(L, C, H, alphaHex) {
+  L = Math.min(1, Math.max(0, L));
+  if (!inGamut(oklchToRgbRaw(L, C, H))) {
+    var lo = 0, hi = C;
+    for (var i = 0; i < 24; i++) {
+      var mid = (lo + hi) / 2;
+      if (inGamut(oklchToRgbRaw(L, mid, H))) lo = mid; else hi = mid;
+    }
+    C = lo;
+  }
+  var rgb = oklchToRgbRaw(L, C, H), out = '#';
+  for (var j = 0; j < 3; j++) {
+    var v = Math.round(Math.min(1, Math.max(0, linearToSrgb(rgb[j]))) * 255);
+    out += (v < 16 ? '0' : '') + v.toString(16);
+  }
+  return out + (alphaHex || '');
+}
+
+/* ── WCAG contrast ─────────────────────────────────────────────────────────
+   No competitor ships contrast-checked Ableton themes; this is what lets us. */
+
+function relLuminance(hex) {
+  var h = hex.replace('#', '').slice(0, 6);
+  var c = [0, 2, 4].map(function (i) { return srgbToLinear(parseInt(h.slice(i, i + 2), 16) / 255); });
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+
+function contrastRatio(a, b) {
+  var la = relLuminance(a), lb = relLuminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+/* ── Contrast audit ────────────────────────────────────────────────────────
+   Which role is "the background" is mode-dependent. In Live's own light themes
+   SurfaceArea is a mid-grey frame (#696e7a), not the page behind text — the
+   dominant light background is DetailViewBackground. Measuring light themes
+   against bg.surface therefore reports nonsense, so each mode gets its own
+   pairs. */
+
+/* Role names are derived, and a derived name can shift meaning: after grouping
+   across all 18 built-ins, the role that kept the name "bg.raised" is actually
+   ScrollbarLCDTrack, while the real panel background split into its own role.
+   So address UI elements by the Ableton tag they are, and look the role up. */
+var ROLE_OF_TAG = (function () {
+  var m = {};
+  for (var i = 0; i < SCHEMA.length; i++) if (SCHEMA[i][2] === 'c') m[SCHEMA[i][0]] = SCHEMA[i][3];
+  return m;
+})();
+
+function roleValue(roles, tag) {
+  var r = roles[ROLE_OF_TAG[tag]];
+  if (!r) throw new Error('no role for tag ' + tag);
+  return oklchToHex(r.L, r.C, r.H, '');
+}
+
+// Each pair: [foreground tag, background tag, label, minRatio]. minRatio 0 = reported
+// but not graded, for pairs where luminance contrast isn't the design intent.
+//
+// "Accent on surface" is informational on purpose. In a light theme the accent
+// is a fill sitting behind dark text, not text itself -- Live's own light
+// themes score 1.0-1.1 there. Grading it would fail every usable light theme
+// and push us to an accent nobody wants. What actually has to be legible is
+// text drawn ON the accent, which is graded at the full 4.5.
+var CONTRAST_PAIRS = {
+  dark: [
+    ['ControlForeground', 'SurfaceArea',           'Body text',         4.5],
+    ['ControlForeground', 'SurfaceBackground',     'Text on panels',    4.5],
+    ['BrowserSampleWaveform', 'SurfaceArea',       'Secondary text',    3.0],
+    ['TextDisabled',      'SurfaceArea',           'Dimmed text',       3.0],
+    ['SelectionForeground', 'ChosenDefault',       'Text on accent',    4.5],
+    ['ChosenDefault',     'SurfaceArea',           'Accent on surface', 0]
+  ],
+  light: [
+    ['ControlForeground', 'DetailViewBackground',  'Body text',         4.5],
+    ['ControlForeground', 'SurfaceHighlight',      'Text on panels',    4.5],
+    ['BrowserSampleWaveform', 'DetailViewBackground', 'Secondary text', 3.0],
+    ['TextDisabled',      'DetailViewBackground',  'Dimmed text',       3.0],
+    ['SelectionForeground', 'ChosenDefault',       'Text on accent',    4.5],
+    ['ChosenDefault',     'DetailViewBackground',  'Accent on surface', 0]
+  ]
+};
+
+function auditContrast(roleValues) {
+  var mode = roleValues.__mode === 'light' ? 'light' : 'dark';
+  return CONTRAST_PAIRS[mode].map(function (p) {
+    var ratio = contrastRatio(roleValue(roleValues, p[0]), roleValue(roleValues, p[1]));
+    return { label: p[2], ratio: ratio, min: p[3],
+             graded: p[3] > 0, pass: p[3] === 0 || ratio >= p[3] };
+  });
+}
+
+/* ── Palette spec → role values ────────────────────────────────────────────
+   ROLE_L supplies each role's lightness for the chosen mode (derived from how
+   Live's own themes position them). Hue and chroma come from the spec.       */
+
+function resolveRoles(spec) {
+  var out = {}, mode = spec.mode === 'light' ? 'l' : 'd', dark = mode === 'd';
+
+  for (var role in ROLE_L) {
+    var info = ROLE_L[role], L = info[mode];
+
+    // Contrast: push lightness away from the surface, further in each direction.
+    var pivot = dark ? 0.42 : 0.62;
+    L = pivot + (L - pivot) * (1 + spec.contrast * 0.45);
+    L = Math.min(0.985, Math.max(0.02, L));
+
+    if (info.t === 'neutral') {
+      // Depth sinks the chassis without touching text: scaled by how far below
+      // the pivot a role already sits, so backgrounds move and foregrounds don't.
+      // This is what makes a genuinely deep theme possible -- raising contrast
+      // alone lightens the text end just as much as it darkens the background.
+      if (spec.depth && L < pivot) L = Math.max(0.02, L + spec.depth * (pivot - L) / pivot);
+
+      // Ease chroma off at the extremes so near-white doesn't pick up a cast.
+      // The dark side tapers far more gently: a deep purple chassis is a real
+      // design choice, and the symmetric curve used to wash it out to grey.
+      var d = Math.abs(L - 0.5) * 2;
+      var taper = 1 - Math.pow(d, L < 0.5 ? 3.6 : 2.2);
+      out[role] = { L: L, C: spec.bgChroma * Math.max(0, taper), H: spec.bgHue };
+    } else {
+      var base = PALETTE[role] || { h: spec.accent.h, c: 0.10 };
+      var slot = ACCENT_SLOTS[role];
+      var h = slot ? spec[slot].h : base.h + (spec.rehue ? spec.hueShift : 0);
+      var c = (slot ? spec[slot].c : base.c) * spec.chroma;
+      out[role] = { L: L, C: c, H: (h % 360 + 360) % 360 };
+    }
+  }
+
+  applyClipPalette(spec, out);
+  out.__mode = spec.mode;
+  return out;
+}
+
+/* Clip1–16. Live keeps these identical across all 18 of its built-in themes,
+   so recolouring them is instantly visible and rare in third-party packs. */
+function applyClipPalette(spec, out) {
+  var cp = spec.clips;
+  // A near-monochrome theme can't separate 16 clips by hue -- there isn't enough
+  // chroma to carry the difference -- so lightness has to do the work instead.
+  // Amplitude scales inversely with chroma, and alternating sign guarantees every
+  // adjacent pair differs rather than flattening out at the peaks of a wave.
+  var amp = 0.03 + Math.max(0, 0.14 - cp.chroma) * 0.85;
+  for (var i = 1; i <= 16; i++) {
+    var role = 'clip.' + i;
+    if (!(role in ROLE_L)) continue;
+    var t = (i - 1) / 16;
+    var h = cp.origin + t * cp.spread;
+    var alt = (i % 2 ? 1 : -1) * amp * 0.7;
+    var drift = Math.sin(t * Math.PI * 2) * amp * 0.35;
+    out[role] = {
+      L: Math.min(0.92, Math.max(0.35, cp.lightness + alt + drift)),
+      C: cp.chroma * (0.85 + 0.3 * Math.cos(t * Math.PI * 2)),
+      H: (h % 360 + 360) % 360
+    };
+  }
+}
+
+/* ── .ask writer ───────────────────────────────────────────────────────────
+   Element order, nesting and alpha come straight from SCHEMA, which mirrors
+   Live's canonical file exactly. Order is preserved because every built-in
+   theme uses the same one and we have no reason to assume the parser is lax. */
+
+function buildAsk(spec, opts) {
+  opts = opts || {};
+  var roles = resolveRoles(spec), nums = numericSet(spec);
+  var esc = function (s) { return String(s).replace(/[<>&"]/g, function (c) {
+    return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); };
+
+  var out = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  out += '<Ableton MajorVersion="5" MinorVersion="12.0_12120" SchemaChangeCount="4"'
+       + ' Creator="' + esc(opts.creator || 'PixeLabs Theme Studio') + '" Revision="">\n';
+  out += '\t<Theme>\n';
+  if (opts.watermark) out += '\t\t<!-- ' + esc(opts.watermark) + ' -->\n';
+
+  var group = null;
+  for (var i = 0; i < SCHEMA.length; i++) {
+    var tag = SCHEMA[i][0], g = SCHEMA[i][1], kind = SCHEMA[i][2],
+        role = SCHEMA[i][3], alpha = SCHEMA[i][4];
+    if (g !== group) {
+      if (group) out += '\t\t</' + group + '>\n';
+      if (g) out += '\t\t<' + g + '>\n';
+      group = g;
+    }
+    var indent = g ? '\t\t\t' : '\t\t', value;
+    if (kind === 'c') {
+      var ov = spec.overrides && spec.overrides[role];
+      if (ov) {
+        value = ov.slice(0, 7) + alpha;
+      } else {
+        var r = roles[role];
+        value = oklchToHex(r.L, r.C, r.H, alpha);
+      }
+    } else {
+      value = nums[tag + (g ? '@' + g : '')];
+    }
+    out += indent + '<' + tag + ' Value="' + value + '" />\n';
+  }
+  if (group) out += '\t\t</' + group + '>\n';
+  out += '\t</Theme>\n</Ableton>\n';
+  return opts.watermark ? stampLsb(out, opts.watermark) : out;
+}
+
+/* ── .ask reader ───────────────────────────────────────────────────────────
+   Import an existing theme: read every colour back onto its role. Values that
+   disagree within a role are reported so an imported theme isn't silently
+   flattened. */
+
+function parseAsk(text) {
+  // Tag names are only unique outside the VU meter groups: Maximum, ZeroDecibel
+  // and friends appear once per meter, so a flat tag->value map lets the last
+  // group silently overwrite the other six. Key by group as well.
+  var byKey = {}, group = null, lines = text.split('\n');
+  for (var li = 0; li < lines.length; li++) {
+    var line = lines[li].trim(), m;
+    if ((m = line.match(/^<([A-Za-z0-9_]+) Value="([^"]*)"\s*\/>$/))) {
+      byKey[(group || '') + '/' + m[1]] = m[2];
+    } else if ((m = line.match(/^<([A-Za-z0-9_]+)>$/))) {
+      if (m[1] !== 'Theme') group = m[1];
+    } else if (/^<\/[A-Za-z0-9_]+>$/.test(line)) {
+      group = null;
+    }
+  }
+  var overrides = {}, seen = {}, conflicts = [], matched = 0;
+  for (var i = 0; i < SCHEMA.length; i++) {
+    var tag = SCHEMA[i][0], kind = SCHEMA[i][2], role = SCHEMA[i][3];
+    var key = (SCHEMA[i][1] || '') + '/' + tag;
+    if (kind !== 'c' || !(key in byKey)) continue;
+    matched++;
+    var v = byKey[key].slice(0, 7).toLowerCase();
+    if (seen[role] === undefined) { seen[role] = v; overrides[role] = v; }
+    else if (seen[role] !== v && conflicts.indexOf(role) < 0) conflicts.push(role);
+  }
+  return { overrides: overrides, conflicts: conflicts, matched: matched,
+           total: SCHEMA.filter(function (r) { return r[2] === 'c'; }).length };
+}
+
+/* ── Forensic watermark ────────────────────────────────────────────────────
+   Traces a leaked file back to a download. It does NOT prevent copying and is
+   not DRM — a .ask must stay readable for Live to load it. Two carriers: an
+   XML comment (trivially removed) and ±1 LSB nudges on visually inert colours
+   (survives a careless copy-paste). */
+
+var LSB_CARRIERS = ['ScrollbarInnerHandleHover', 'ScrollbarLCDHandleHover',
+  'ScrollbarInnerTrackHover', 'ScrollbarLCDTrackHover', 'TreeColumnHeadControl',
+  'BrowserBarOverlayHintTextColor', 'RetroDisplayScaleText', 'DrumRackScroller2',
+  'ControlOffDisabledForeground', 'TransportOffDisabledForeground',
+  'MutedAuditionClip', 'NoteProbability', 'RetroDisplayForegroundDisabled',
+  'TreeRowCategoryForeground', 'BrowserDisabledItem', 'ViewCheckControlDisabledOn',
+  'ViewCheckControlDisabledOff', 'RangeDisabledOff', 'ProgressText', 'DeactivatedPotiNeedle',
+  'ArrangementRulerMarkings', 'DetailViewRulerMarkings', 'WarperTimeBarMarkerBackground',
+  'ExpressionLaneHeaderHighlight', 'RetroDisplayBackgroundLine', 'TakeLaneTrackNotHighlighted',
+  'DrumRackScroller1', 'PianoKeySeparator', 'ControlSelectionFrame', 'MainViewFocusIndicator',
+  'SpectrumDefaultColor', 'InputCurveColor'];
+
+// 3 bits per carrier (one LSB per channel), 8 bits per character.
+function lsbCapacity() { return Math.floor(LSB_CARRIERS.length * 3 / 8); }
+
+function stampLsb(xml, payload) {
+  var bits = [];
+  for (var i = 0; i < payload.length; i++) {
+    var code = payload.charCodeAt(i) & 0xff;
+    for (var b = 7; b >= 0; b--) bits.push((code >> b) & 1);
+  }
+  var idx = 0;
+  for (var c = 0; c < LSB_CARRIERS.length && idx < bits.length; c++) {
+    xml = xml.replace(new RegExp('(<' + LSB_CARRIERS[c] + ' Value="#)([0-9a-f]{6})', 'i'),
+      function (_, head, hex) {
+        var chan = hex.match(/../g).map(function (h) { return parseInt(h, 16); });
+        for (var k = 0; k < 3 && idx < bits.length; k++, idx++) {
+          chan[k] = (chan[k] & 0xfe) | bits[idx];
+        }
+        return head + chan.map(function (v) { return (v < 16 ? '0' : '') + v.toString(16); }).join('');
+      });
+  }
+  return xml;
+}
+
+function readLsb(xml, byteLen) {
+  var bits = [];
+  for (var c = 0; c < LSB_CARRIERS.length; c++) {
+    var m = xml.match(new RegExp('<' + LSB_CARRIERS[c] + ' Value="#([0-9a-f]{6})', 'i'));
+    if (!m) continue;
+    var chan = m[1].match(/../g).map(function (h) { return parseInt(h, 16); });
+    for (var k = 0; k < 3; k++) bits.push(chan[k] & 1);
+  }
+  var s = '';
+  for (var i = 0; i + 8 <= bits.length && s.length < byteLen; i += 8) {
+    var v = 0;
+    for (var b = 0; b < 8; b++) v = (v << 1) | bits[i + b];
+    s += String.fromCharCode(v);
+  }
+  return s;
+}
+
+/* Shipped inside the pack zip and quoted by the editor's help panel. */
+var INSTALL_TEXT = [
+  'PixeLabs Themes for Ableton Live 12',
+  '',
+  'macOS',
+  '  1. Quit Live.',
+  '  2. In Finder go to Applications, right-click your Ableton Live app',
+  '     and choose "Show Package Contents".',
+  '  3. Open Contents/App-Resources/Themes',
+  '  4. Drop the .ask files in there.',
+  '  5. Relaunch Live, then Preferences > Look/Feel > Theme.',
+  '',
+  '  Note: this folder is inside the app, so a Live update wipes it.',
+  '  Keep your .ask files somewhere safe and copy them back after updating.',
+  '',
+  'Windows',
+  '  Commonly C:\\ProgramData\\Ableton\\Live 12\\Resources\\Themes\\',
+  '  If that folder is not there, look for Resources\\Themes inside your',
+  '  Ableton Live install directory.',
+  '',
+  'Not affiliated with or endorsed by Ableton AG.',
+  'Ableton and Live are trademarks of Ableton AG.'
+].join('\n');
+
+/* ── Installer scripts ─────────────────────────────────────────────────────
+   A browser can't find Ableton for you: it cannot enumerate the filesystem,
+   so it can never locate /Applications/Ableton Live*.app on its own. A shell
+   script can. These operate on whatever .ask files sit next to them, so the
+   same script works for one exported theme or the whole pack. */
+
+function installerMac() {
+  return [
+    '#!/bin/bash',
+    '# PixeLabs Theme Studio - install Ableton Live themes (macOS)',
+    '# Copies every .ask file next to this script into Ableton\'s Themes folder.',
+    'set -u',
+    'cd "$(dirname "$0")" || exit 1',
+    'shopt -s nullglob',
+    '',
+    'asks=(*.ask */*.ask)',
+    'if [ ${#asks[@]} -eq 0 ]; then',
+    '  echo "No .ask files found next to this installer."',
+    '  echo "Put this script in the same folder as your themes and run it again."',
+    '  read -n 1 -s -r -p "Press any key to close."; echo; exit 1',
+    'fi',
+    '',
+    'apps=(/Applications/Ableton\\ Live*.app)',
+    'if [ ${#apps[@]} -eq 0 ]; then',
+    '  echo "No Ableton Live install found in /Applications."',
+    '  read -n 1 -s -r -p "Press any key to close."; echo; exit 1',
+    'fi',
+    '',
+    'if [ ${#apps[@]} -gt 1 ]; then',
+    '  echo "Found more than one Ableton Live:"',
+    '  for i in "${!apps[@]}"; do echo "  [$i] $(basename "${apps[$i]}")"; done',
+    '  read -r -p "Which one? [0] " pick; pick="${pick:-0}"',
+    'else',
+    '  pick=0',
+    'fi',
+    'app="${apps[$pick]}"',
+    'dest="$app/Contents/App-Resources/Themes"',
+    '',
+    'if [ ! -d "$dest" ]; then',
+    '  echo "Themes folder not found inside $(basename "$app")."',
+    '  read -n 1 -s -r -p "Press any key to close."; echo; exit 1',
+    'fi',
+    '',
+    'if pgrep -x Live >/dev/null 2>&1; then',
+    '  echo "Ableton Live is running. Quit it first, then run this again."',
+    '  read -n 1 -s -r -p "Press any key to close."; echo; exit 1',
+    'fi',
+    '',
+    'echo "Installing ${#asks[@]} theme(s) into:"',
+    'echo "  $dest"',
+    'echo',
+    'n=0',
+    'for f in "${asks[@]}"; do',
+    '  if cp "$f" "$dest/"; then echo "  ok  $(basename "$f")"; n=$((n+1));',
+    '  else echo "  FAILED  $(basename "$f")"; fi',
+    'done',
+    '',
+    'echo',
+    'echo "Installed $n theme(s)."',
+    'echo "Open Live, then Preferences > Look/Feel > Theme."',
+    'echo',
+    'echo "Note: a Live update replaces the app and wipes these themes."',
+    'echo "Keep your .ask files and run this installer again afterwards."',
+    'read -n 1 -s -r -p "Press any key to close."; echo'
+  ].join('\n') + '\n';
+}
+
+function installerWindows() {
+  return [
+    '@echo off',
+    'REM PixeLabs Theme Studio - install Ableton Live themes (Windows)',
+    'REM Copies every .ask file next to this script into Ableton\'s Themes folder.',
+    'setlocal enabledelayedexpansion',
+    'cd /d "%~dp0"',
+    '',
+    'tasklist /NH 2>nul | findstr /I "Ableton" >nul',
+    'if not errorlevel 1 (',
+    '  echo Ableton Live looks like it is running. Close it first, then run this again.',
+    '  pause',
+    '  exit /b 1',
+    ')',
+    '',
+    'REM First match wins -- probe the usual locations in order of likelihood.',
+    'set "FOUND="',
+    'for %%D in ('
+      + '"C:\\ProgramData\\Ableton\\Live 12\\Resources\\Themes" '
+      + '"C:\\ProgramData\\Ableton\\Live 12 Suite\\Resources\\Themes" '
+      + '"C:\\ProgramData\\Ableton\\Live 12 Standard\\Resources\\Themes" '
+      + '"%ProgramFiles%\\Ableton\\Live 12 Suite\\Resources\\Themes" '
+      + '"%ProgramFiles%\\Ableton\\Live 12 Standard\\Resources\\Themes"'
+      + ') do (',
+    '  if not defined FOUND if exist %%D set "FOUND=%%~D"',
+    ')',
+    '',
+    'if not defined FOUND (',
+    '  echo Could not find Ableton^\'s Themes folder automatically.',
+    '  echo Look for Resources\\Themes inside your Ableton Live install folder',
+    '  echo and copy the .ask files there by hand.',
+    '  pause',
+    '  exit /b 1',
+    ')',
+    '',
+    'echo Installing themes into:',
+    'echo   %FOUND%',
+    'echo.',
+    'set /a N=0',
+    'set /a FAILED=0',
+    'for %%F in (*.ask) do call :copyone "%%F"',
+    'for /d %%S in (*) do for %%F in ("%%S\\*.ask") do call :copyone "%%F"',
+    '',
+    'echo.',
+    'if %FAILED% GTR 0 (',
+    '  echo %FAILED% file^(s^) could not be copied.',
+    '  echo This folder usually needs administrator rights: right-click this script',
+    '  echo and choose "Run as administrator", then try again.',
+    ') else (',
+    '  echo Installed %N% theme^(s^).',
+    '  echo Open Live, then Preferences ^> Look/Feel ^> Theme.',
+    ')',
+    'echo.',
+    'echo Note: a Live update can replace these files. Keep your .ask files',
+    'echo and run this installer again afterwards.',
+    'pause',
+    'exit /b 0',
+    '',
+    ':copyone',
+    'copy /Y %1 "%FOUND%\\" >nul 2>&1',
+    'if errorlevel 1 (',
+    '  echo   FAILED  %~nx1',
+    '  set /a FAILED+=1',
+    ') else (',
+    '  echo   ok      %~nx1',
+    '  set /a N+=1',
+    ')',
+    'goto :eof'
+  ].join('\r\n') + '\r\n';
+}
+
+/* ── ZIP (store, no compression) ───────────────────────────────────────────
+   Hand-rolled because the page must work from file:// with no CDN reachable. */
+
+var CRC_TABLE = (function () {
+  var t = new Uint32Array(256);
+  for (var n = 0; n < 256; n++) {
+    var c = n;
+    for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+
+function crc32(bytes) {
+  var c = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function makeZip(files) {
+  var enc = new TextEncoder(), chunks = [], central = [], offset = 0;
+  var u16 = function (v) { return [v & 255, (v >> 8) & 255]; };
+  var u32 = function (v) { return [v & 255, (v >> 8) & 255, (v >> 16) & 255, (v >>> 24) & 255]; };
+
+  files.forEach(function (f) {
+    var name = enc.encode(f.name), data = enc.encode(f.content), crc = crc32(data);
+    // External attrs carry the Unix mode in the high 16 bits, and version-made-by
+    // must say "Unix" for unzip to honour it -- otherwise the .command installer
+    // arrives without its executable bit and won't open on a double-click.
+    var mode = f.mode || 0644;
+    var madeBy = 0x0314;                       // 3 = Unix, 20 = zip spec 2.0
+    var extAttr = ((0100000 | mode) << 16) >>> 0;
+    var head = [].concat([0x50, 0x4b, 0x03, 0x04], u16(20), u16(0), u16(0), u16(0), u16(0),
+      u32(crc), u32(data.length), u32(data.length), u16(name.length), u16(0));
+    chunks.push(new Uint8Array(head), name, data);
+    central.push([].concat([0x50, 0x4b, 0x01, 0x02], u16(madeBy), u16(20), u16(0), u16(0), u16(0), u16(0),
+      u32(crc), u32(data.length), u32(data.length), u16(name.length),
+      u16(0), u16(0), u16(0), u16(0), u32(extAttr), u32(offset)), name);
+    offset += head.length + name.length + data.length;
+  });
+
+  var cdir = [];
+  central.forEach(function (p) { cdir.push(p instanceof Uint8Array ? p : new Uint8Array(p)); });
+  var cdirLen = cdir.reduce(function (n, c) { return n + c.length; }, 0);
+  var end = new Uint8Array([].concat([0x50, 0x4b, 0x05, 0x06], u16(0), u16(0),
+    u16(files.length), u16(files.length), u32(cdirLen), u32(offset), u16(0)));
+  return new Blob(chunks.concat(cdir, [end]), { type: 'application/zip' });
+}
+
+
+/* ── src/presets.js ── */
+/* ── Theme families ────────────────────────────────────────────────────────
+   Each entry is a palette spec. bgHue/bgChroma tint the neutral chassis;
+   accent/accent2 drive the highlight colours; clips recolours Clip1–16, which
+   Live leaves identical in all 18 of its own themes.                        */
+
+// Prepended to every exported filename and theme name so all PixeLabs themes
+// sort together in Ableton's Look/Feel dropdown, which is flat and alphabetical
+// and mixes them in with Live's own.
+var THEME_PREFIX = 'PXL ';
+
+function spec(o) {
+  return {
+    id: o.id, name: o.name, family: o.family,
+    mode: o.mode || 'dark',
+    bgHue: o.bgHue, bgChroma: o.bgChroma,
+    depth: o.depth || 0,
+    contrast: o.contrast === undefined ? 0.1 : o.contrast,
+    accent: o.accent, accent2: o.accent2,
+    chroma: o.chroma === undefined ? 1 : o.chroma,
+    rehue: !!o.rehue, hueShift: o.hueShift || 0,
+    clips: o.clips || { origin: 20, spread: 340, chroma: 0.13, lightness: 0.70 },
+    overrides: o.overrides || {}
+  };
+}
+
+var FAMILIES = [
+  { id: 'dark-pro', name: 'Dark Pro',
+    blurb: 'Low-fatigue studio darks. Restrained chroma, wide tonal separation — built for long sessions.' },
+  { id: 'neon', name: 'Neon',
+    blurb: 'High-chroma accents on deep chassis. Psytrance and synthwave palettes that still pass contrast.' },
+  { id: 'retro', name: 'Retro',
+    blurb: 'Vintage hardware: cream, olive, oxblood and amber CRT. Warm chassis, muted accents.' },
+  { id: 'light', name: 'Light',
+    blurb: 'Daylight-legible themes for bright rooms — the corner of this market almost nobody serves.' },
+  { id: 'cyberpunk', name: 'Cyberpunk',
+    blurb: 'Deep indigo and near-black under neon spring green, scarlet and electric blue. High chroma, still contrast-checked.' }
+];
+
+var THEMES = [
+  /* ── Dark Pro ─────────────────────────────────────────────────────────── */
+  spec({ id:'graphite', name:'Graphite', family:'dark-pro', bgHue:265, bgChroma:0.006, contrast:0.12,
+         accent:{h:65,c:0.135}, accent2:{h:207,c:0.120}, chroma:0.95,
+         clips:{origin:20,spread:340,chroma:0.115,lightness:0.68} }),
+  spec({ id:'slate', name:'Slate', family:'dark-pro', bgHue:245, bgChroma:0.018, contrast:0.10,
+         accent:{h:225,c:0.130}, accent2:{h:190,c:0.115},
+         clips:{origin:200,spread:300,chroma:0.120,lightness:0.70} }),
+  spec({ id:'obsidian', name:'Obsidian', family:'dark-pro', bgHue:280, bgChroma:0.010, contrast:0.26,
+         accent:{h:280,c:0.145}, accent2:{h:200,c:0.125},
+         clips:{origin:250,spread:340,chroma:0.125,lightness:0.68} }),
+  spec({ id:'ink', name:'Ink', family:'dark-pro', bgHue:255, bgChroma:0.022, contrast:0.18,
+         accent:{h:250,c:0.150}, accent2:{h:160,c:0.130},
+         clips:{origin:230,spread:320,chroma:0.130,lightness:0.69} }),
+  spec({ id:'basalt', name:'Basalt', family:'dark-pro', bgHue:200, bgChroma:0.012, contrast:0.14,
+         accent:{h:190,c:0.130}, accent2:{h:95,c:0.120},
+         clips:{origin:150,spread:330,chroma:0.120,lightness:0.70} }),
+  spec({ id:'umber', name:'Umber', family:'dark-pro', bgHue:60, bgChroma:0.016, contrast:0.12,
+         accent:{h:55,c:0.140}, accent2:{h:25,c:0.135},
+         clips:{origin:15,spread:330,chroma:0.125,lightness:0.69} }),
+  spec({ id:'moss', name:'Moss', family:'dark-pro', bgHue:140, bgChroma:0.014, contrast:0.13,
+         accent:{h:130,c:0.140}, accent2:{h:70,c:0.125},
+         clips:{origin:90,spread:320,chroma:0.120,lightness:0.70} }),
+  spec({ id:'petrol', name:'Petrol', family:'dark-pro', bgHue:210, bgChroma:0.024, contrast:0.16,
+         accent:{h:185,c:0.145}, accent2:{h:45,c:0.130},
+         clips:{origin:170,spread:340,chroma:0.130,lightness:0.70} }),
+  spec({ id:'carbon', name:'Carbon', family:'dark-pro', bgHue:270, bgChroma:0.003, contrast:0.30,
+         accent:{h:0,c:0.000}, accent2:{h:0,c:0.000}, chroma:0.35,
+         clips:{origin:20,spread:340,chroma:0.075,lightness:0.66} }),
+  spec({ id:'nightshift', name:'Nightshift', family:'dark-pro', bgHue:40, bgChroma:0.020, contrast:0.08,
+         accent:{h:40,c:0.125}, accent2:{h:20,c:0.115}, chroma:0.75,
+         clips:{origin:15,spread:250,chroma:0.095,lightness:0.66} }),
+
+  /* ── Neon ─────────────────────────────────────────────────────────────── */
+  spec({ id:'goa', name:'Goa', family:'neon', bgHue:290, bgChroma:0.030, contrast:0.24,
+         accent:{h:320,c:0.240}, accent2:{h:170,c:0.210}, chroma:1.25, rehue:true, hueShift:15,
+         clips:{origin:280,spread:360,chroma:0.185,lightness:0.72} }),
+  spec({ id:'zenon', name:'Zenon', family:'neon', bgHue:275, bgChroma:0.038, contrast:0.28,
+         accent:{h:140,c:0.250}, accent2:{h:300,c:0.230}, chroma:1.30,
+         clips:{origin:110,spread:360,chroma:0.190,lightness:0.73} }),
+  spec({ id:'ultraviolet', name:'Ultraviolet', family:'neon', bgHue:300, bgChroma:0.045, contrast:0.26,
+         accent:{h:295,c:0.260}, accent2:{h:210,c:0.220}, chroma:1.25,
+         clips:{origin:250,spread:300,chroma:0.195,lightness:0.72} }),
+  spec({ id:'acid', name:'Acid', family:'neon', bgHue:120, bgChroma:0.028, contrast:0.30,
+         accent:{h:125,c:0.255}, accent2:{h:60,c:0.215}, chroma:1.30,
+         clips:{origin:80,spread:300,chroma:0.190,lightness:0.74} }),
+  spec({ id:'vaporwave', name:'Vaporwave', family:'neon', bgHue:310, bgChroma:0.040, contrast:0.20,
+         accent:{h:340,c:0.215}, accent2:{h:200,c:0.200}, chroma:1.15,
+         clips:{origin:300,spread:260,chroma:0.175,lightness:0.75} }),
+  spec({ id:'plasma', name:'Plasma', family:'neon', bgHue:265, bgChroma:0.034, contrast:0.27,
+         accent:{h:20,c:0.245}, accent2:{h:265,c:0.225}, chroma:1.25,
+         clips:{origin:340,spread:340,chroma:0.185,lightness:0.72} }),
+  spec({ id:'nitrous', name:'Nitrous', family:'neon', bgHue:195, bgChroma:0.032, contrast:0.29,
+         accent:{h:195,c:0.245}, accent2:{h:150,c:0.220}, chroma:1.20,
+         clips:{origin:160,spread:280,chroma:0.180,lightness:0.73} }),
+  spec({ id:'darkpsy', name:'Darkpsy', family:'neon', bgHue:285, bgChroma:0.022, contrast:0.34,
+         accent:{h:145,c:0.235}, accent2:{h:320,c:0.215}, chroma:1.15,
+         clips:{origin:270,spread:340,chroma:0.170,lightness:0.68} }),
+  spec({ id:'spectra', name:'Spectra', family:'neon', bgHue:255, bgChroma:0.026, contrast:0.24,
+         accent:{h:250,c:0.230}, accent2:{h:35,c:0.225}, chroma:1.20,
+         clips:{origin:0,spread:360,chroma:0.195,lightness:0.73} }),
+  spec({ id:'hypnotic', name:'Hypnotic', family:'neon', bgHue:230, bgChroma:0.036, contrast:0.25,
+         accent:{h:175,c:0.240}, accent2:{h:280,c:0.230}, chroma:1.25,
+         clips:{origin:190,spread:320,chroma:0.185,lightness:0.72} }),
+
+  /* ── Retro ────────────────────────────────────────────────────────────── */
+  spec({ id:'oxblood', name:'Oxblood', family:'retro', bgHue:20, bgChroma:0.034, contrast:0.16,
+         accent:{h:35,c:0.150}, accent2:{h:190,c:0.120}, chroma:0.90,
+         clips:{origin:10,spread:300,chroma:0.130,lightness:0.68} }),
+  spec({ id:'olive-drab', name:'Olive Drab', family:'retro', bgHue:105, bgChroma:0.030, contrast:0.14,
+         accent:{h:85,c:0.145}, accent2:{h:45,c:0.130}, chroma:0.85,
+         clips:{origin:70,spread:280,chroma:0.120,lightness:0.68} }),
+  spec({ id:'amber-crt', name:'Amber CRT', family:'retro', bgHue:50, bgChroma:0.018, contrast:0.32,
+         accent:{h:60,c:0.170}, accent2:{h:45,c:0.150}, chroma:0.80,
+         clips:{origin:25,spread:240,chroma:0.105,lightness:0.70} }),
+  spec({ id:'teak', name:'Teak', family:'retro', bgHue:55, bgChroma:0.040, contrast:0.15,
+         accent:{h:60,c:0.145}, accent2:{h:165,c:0.125}, chroma:0.90,
+         clips:{origin:30,spread:300,chroma:0.125,lightness:0.69} }),
+  spec({ id:'rackmount', name:'Rackmount', family:'retro', bgHue:250, bgChroma:0.008, contrast:0.20,
+         accent:{h:45,c:0.155}, accent2:{h:15,c:0.140}, chroma:0.85,
+         clips:{origin:20,spread:320,chroma:0.120,lightness:0.68} }),
+  spec({ id:'bakelite', name:'Bakelite', family:'retro', bgHue:35, bgChroma:0.026, contrast:0.18,
+         accent:{h:70,c:0.150}, accent2:{h:200,c:0.125}, chroma:0.85,
+         clips:{origin:25,spread:290,chroma:0.125,lightness:0.68} }),
+  spec({ id:'sea-foam', name:'Sea Foam', family:'retro', bgHue:170, bgChroma:0.028, contrast:0.14,
+         accent:{h:165,c:0.140}, accent2:{h:40,c:0.130}, chroma:0.85,
+         clips:{origin:140,spread:280,chroma:0.120,lightness:0.70} }),
+  spec({ id:'tape', name:'Tape', family:'retro', bgHue:75, bgChroma:0.022, contrast:0.13,
+         accent:{h:50,c:0.140}, accent2:{h:25,c:0.125}, chroma:0.80,
+         clips:{origin:35,spread:260,chroma:0.115,lightness:0.68} }),
+  spec({ id:'blueprint', name:'Blueprint', family:'retro', bgHue:255, bgChroma:0.042, contrast:0.22,
+         accent:{h:230,c:0.140}, accent2:{h:195,c:0.130}, chroma:0.85,
+         clips:{origin:210,spread:260,chroma:0.120,lightness:0.70} }),
+  spec({ id:'valve', name:'Valve', family:'retro', bgHue:30, bgChroma:0.036, contrast:0.19,
+         accent:{h:55,c:0.165}, accent2:{h:25,c:0.145}, chroma:0.85,
+         clips:{origin:20,spread:200,chroma:0.130,lightness:0.69} }),
+
+  /* ── Light ────────────────────────────────────────────────────────────── */
+  spec({ id:'daylight', name:'Daylight', family:'light', mode:'light', bgHue:250, bgChroma:0.006, contrast:0.20,
+         accent:{h:245,c:0.150}, accent2:{h:195,c:0.135}, chroma:1.00,
+         clips:{origin:20,spread:340,chroma:0.115,lightness:0.74} }),
+  spec({ id:'paper', name:'Paper', family:'light', mode:'light', bgHue:70, bgChroma:0.010, contrast:0.18,
+         accent:{h:40,c:0.155}, accent2:{h:200,c:0.135},
+         clips:{origin:25,spread:330,chroma:0.115,lightness:0.73} }),
+  spec({ id:'linen', name:'Linen', family:'light', mode:'light', bgHue:60, bgChroma:0.016, contrast:0.16,
+         accent:{h:35,c:0.150}, accent2:{h:170,c:0.130},
+         clips:{origin:20,spread:320,chroma:0.110,lightness:0.73} }),
+  spec({ id:'overcast', name:'Overcast', family:'light', mode:'light', bgHue:240, bgChroma:0.012, contrast:0.24,
+         accent:{h:235,c:0.155}, accent2:{h:280,c:0.135},
+         clips:{origin:200,spread:330,chroma:0.115,lightness:0.72} }),
+  spec({ id:'sandstone', name:'Sandstone', family:'light', mode:'light', bgHue:55, bgChroma:0.018, contrast:0.17,
+         accent:{h:45,c:0.160}, accent2:{h:15,c:0.140},
+         clips:{origin:15,spread:300,chroma:0.115,lightness:0.72} }),
+  spec({ id:'mint', name:'Mint', family:'light', mode:'light', bgHue:160, bgChroma:0.014, contrast:0.19,
+         accent:{h:165,c:0.145}, accent2:{h:250,c:0.140},
+         clips:{origin:130,spread:320,chroma:0.115,lightness:0.73} }),
+  spec({ id:'porcelain', name:'Porcelain', family:'light', mode:'light', bgHue:220, bgChroma:0.004, contrast:0.28,
+         accent:{h:215,c:0.150}, accent2:{h:340,c:0.140},
+         clips:{origin:190,spread:340,chroma:0.110,lightness:0.72} }),
+  spec({ id:'chalk', name:'Chalk', family:'light', mode:'light', bgHue:265, bgChroma:0.003, contrast:0.32,
+         accent:{h:0,c:0.000}, accent2:{h:0,c:0.000}, chroma:0.40,
+         clips:{origin:20,spread:340,chroma:0.070,lightness:0.70} }),
+  spec({ id:'sky', name:'Sky', family:'light', mode:'light', bgHue:230, bgChroma:0.020, contrast:0.21,
+         accent:{h:225,c:0.160}, accent2:{h:190,c:0.140},
+         clips:{origin:180,spread:320,chroma:0.120,lightness:0.73} }),
+  spec({ id:'fog', name:'Fog', family:'light', mode:'light', bgHue:200, bgChroma:0.009, contrast:0.15,
+         accent:{h:200,c:0.140}, accent2:{h:85,c:0.130}, chroma:0.90,
+         clips:{origin:160,spread:300,chroma:0.105,lightness:0.73} }),
+
+  /* ── Cyberpunk ────────────────────────────────────────────────────────────
+     Built around the genre's usual coordinates in OKLCH: a deep indigo-violet
+     chassis near H287, spring green near H157 at high chroma, scarlet near H15,
+     electric blue near H269, lavender near H311. Tuned for Ableton's surfaces —
+     clip grids, meters and device panels — rather than syntax tokens. */
+  spec({ id:'neon-circuit', name:'Neon Circuit', family:'cyberpunk', bgHue:287, bgChroma:0.105, contrast:0.30, depth:-0.15,
+         accent:{h:157,c:0.215}, accent2:{h:311,c:0.140}, chroma:1.25,
+         clips:{origin:140,spread:215,chroma:0.195,lightness:0.73} }),
+  spec({ id:'redline', name:'Redline', family:'cyberpunk', bgHue:276, bgChroma:0.034, contrast:0.32, depth:-0.14,
+         accent:{h:15,c:0.250}, accent2:{h:157,c:0.210}, chroma:1.30,
+         clips:{origin:320,spread:205,chroma:0.200,lightness:0.71} }),
+  spec({ id:'nightwire', name:'Nightwire', family:'cyberpunk', bgHue:287, bgChroma:0.100, contrast:0.28, depth:-0.15,
+         accent:{h:269,c:0.240}, accent2:{h:157,c:0.210}, chroma:1.25,
+         clips:{origin:195,spread:200,chroma:0.190,lightness:0.72} }),
+  spec({ id:'lavender-haze', name:'Lavender Haze', family:'cyberpunk', bgHue:291, bgChroma:0.095, contrast:0.26, depth:-0.13,
+         accent:{h:311,c:0.185}, accent2:{h:170,c:0.180}, chroma:1.15,
+         clips:{origin:255,spread:195,chroma:0.180,lightness:0.74} }),
+  spec({ id:'chrome-alley', name:'Chrome Alley', family:'cyberpunk', bgHue:265, bgChroma:0.026, contrast:0.34, depth:-0.15,
+         accent:{h:170,c:0.200}, accent2:{h:330,c:0.215}, chroma:1.20,
+         clips:{origin:150,spread:230,chroma:0.190,lightness:0.72} })
+];
+
+
+/* ── src/ui.js ── */
+/* ── Editor state ─────────────────────────────────────────────────────────── */
+
+var state = null, lastXml = '';
+
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function $(sel) { return document.querySelector(sel); }
+function el(tag, cls, txt) {
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt !== undefined) n.textContent = txt;
+  return n;
+}
+function hexOf(r) { return r ? oklchToHex(r.L, r.C, r.H, '') : '#000000'; }
+
+/* Every mock element names the Ableton tag it stands for, so it recolours
+   correctly in both modes without a per-mode lookup table. Live's light themes
+   are mid-grey chrome with a light detail pane — not a white UI — and mapping
+   by tag reproduces that instead of guessing at it. */
+var MOCK_TAGS = {
+  desktop: 'Desktop', surface: 'SurfaceArea', raised: 'SurfaceBackground',
+  control: 'ClipSlotButton', detail: 'DetailViewBackground', highlight: 'SurfaceHighlight',
+  frame: 'ControlContrastFrame', text: 'ControlForeground', textdim: 'TextDisabled',
+  accent: 'ChosenDefault', accent2: 'RangeDefault', onaccent: 'SelectionForeground',
+  record: 'ChosenRecord', play: 'ChosenPlay', meterbg: 'MeterBackground',
+  handle: 'ControlFillHandle', displaybg: 'RetroDisplayBackground',
+  wave: 'RetroDisplayForeground2', browserbar: 'BrowserBar', onclip: 'ClipText',
+  transportbg: 'TransportOffBackground', browsertext: 'BrowserDisabledItem',
+  trackhdr: 'SurfaceBackground', lcdtext: 'RetroDisplayForeground'
+};
+
+function applyPreview(roles, mode) {
+  var s = $('#mock').style;
+  for (var k in MOCK_TAGS) s.setProperty('--m-' + k, roleValue(roles, MOCK_TAGS[k]));
+
+  // clip grid + meter ramp
+  for (var i = 1; i <= 16; i++) s.setProperty('--m-clip' + i, hexOf(roles['clip.' + i]));
+  ['Maximum','AboveZeroDecibel','ZeroDecibel','BelowZeroDecibel1','BelowZeroDecibel2','Minimum']
+    .forEach(function (stop, i) { s.setProperty('--m-vu' + i, hexOf(roles['meter.Standard.' + stop])); });
+}
+
+/* ── Ableton mock markup (built once, recoloured via CSS variables) ───────── */
+
+var TRACKS = ['Kick', 'Bass', 'Lead', 'Pad', 'Perc', 'FX'];
+var CLIPS = [
+  [1, 5, 9, 0, 12, 0], [2, 6, 0, 11, 13, 3], [0, 7, 10, 4, 0, 14],
+  [3, 0, 8, 15, 16, 5], [4, 8, 0, 0, 2, 0]
+];
+
+function buildMock() {
+  var h = '';
+  h += '<div class="mock-transport">'
+     + '<span class="pill">128.00</span><span class="pill on">4/4</span>'
+     + '<span class="pill play">&#9654;</span><span class="pill rec">&#9679;</span>'
+     + '<span class="pill">1.1.1</span><span style="flex:1"></span>'
+     + '<span class="pill">Session</span><span class="pill">Arrange</span></div>';
+
+  h += '<div class="mock-body"><div class="mock-browser">'
+     + '<div class="hd">Collections</div>'
+     + ['Sounds', 'Drums', 'Instruments', 'Audio Effects', 'MIDI Effects', 'Max for Live',
+        'Plug-Ins', 'Clips', 'Samples'].map(function (c, i) {
+          return '<div class="cat' + (i === 3 ? ' sel' : '') + '">' + c + '</div>'; }).join('')
+     + '</div><div class="mock-main">';
+
+  // session grid
+  h += '<div class="mock-tracks">';
+  TRACKS.forEach(function (name, t) {
+    h += '<div class="mock-track"><div class="hdr">' + name + '</div>';
+    for (var r = 0; r < CLIPS.length; r++) {
+      var c = CLIPS[r][t];
+      h += c
+        ? '<div class="mock-slot" style="background:var(--m-clip' + c + ')">'
+          + '<span class="tri">&#9654;</span>' + name.toLowerCase() + ' ' + (r + 1) + '</div>'
+        : '<div class="mock-slot empty"></div>';
+    }
+    h += '</div>';
+  });
+  h += '<div class="mock-track mock-scenes"><div class="hdr">Scenes</div>';
+  for (var r2 = 0; r2 < CLIPS.length; r2++) h += '<div class="mock-slot">' + (r2 + 1) + '</div>';
+  h += '</div></div>';
+
+  // mixer
+  h += '<div class="mock-mixer">';
+  var levels = [0.92, 0.7, 0.55, 0.38, 0.66, 0.28, 0.5];
+  for (var s = 0; s < TRACKS.length + 1; s++) {
+    var lv = levels[s % levels.length];
+    h += '<div class="mock-strip"><div class="mock-meter">' + meterFill(lv) + '</div>'
+       + '<div class="mock-fader" style="height:' + (35 + lv * 55) + '%"></div></div>';
+  }
+  h += '</div>';
+
+  // device chain
+  h += '<div class="mock-device">'
+     + '<div class="mock-dev"><div class="t">Operator</div><div class="mock-knobs">'
+     + '<div class="mock-knob"></div><div class="mock-knob"></div><div class="mock-knob"></div>'
+     + '<div class="mock-knob"></div></div></div>'
+     + '<div class="mock-dev"><div class="t">Auto Filter</div><div class="mock-knobs">'
+     + '<div class="mock-knob"></div><div class="mock-knob"></div><div class="mock-knob"></div>'
+     + '</div></div>'
+     + '<div class="mock-lcd">SPECTRUM<div class="wave">'
+     + [12,30,22,48,36,64,44,80,58,72,50,88,62,40,28,54,34,66,42,24].map(function (v) {
+         return '<i style="height:' + v + '%"></i>'; }).join('')
+     + '</div></div></div>';
+
+  h += '</div></div>';
+  $('#mock').innerHTML = h;
+}
+
+// Six-stop VU ramp, loudest at the top, matching Live's meter stops.
+function meterFill(level) {
+  var stops = [[1, 0], [0.92, 1], [0.84, 2], [0.62, 3], [0.34, 4], [0, 5]], out = '';
+  for (var i = 0; i < stops.length; i++) {
+    var top = stops[i][0], bottom = i + 1 < stops.length ? stops[i + 1][0] : 0;
+    if (level <= bottom) continue;
+    var hgt = (Math.min(level, top) - bottom) * 100;
+    out += '<span style="bottom:' + (bottom * 100) + '%;height:' + hgt
+        +  '%;background:var(--m-vu' + stops[i][1] + ')"></span>';
+  }
+  return out;
+}
+
+/* ── Render ───────────────────────────────────────────────────────────────── */
+
+function render() {
+  var roles = resolveRoles(state);
+  applyPreview(roles, state.mode);
+
+  // contrast report
+  var box = $('#audit'); box.innerHTML = '';
+  auditContrast(roles).forEach(function (r) {
+    var row = el('div', 'audit-row');
+    row.appendChild(el('span', 'lbl', r.label));
+    row.appendChild(el('span', 'val', r.ratio.toFixed(2) + ':1'));
+    var b = el('span', 'badge ' + (!r.graded ? 'info' : r.pass ? 'pass' : 'fail'),
+               !r.graded ? 'info' : r.pass ? 'AA' : 'below ' + r.min);
+    row.appendChild(b);
+    box.appendChild(row);
+  });
+
+  // clip swatches
+  var sw = $('#clipswatches'); sw.innerHTML = '';
+  for (var i = 1; i <= 16; i++) {
+    var c = el('i'); c.style.background = hexOf(roles['clip.' + i]);
+    c.title = 'Clip ' + i; sw.appendChild(c);
+  }
+
+  renderRoleList(roles);
+  lastXml = buildAsk(state, { creator: 'PixeLabs Theme Studio', watermark: watermark() });
+  $('#xml').value = lastXml;
+  syncControls();
+}
+
+function watermark() {
+  var v = $('#wm').value.trim();
+  return v ? v.slice(0, lsbCapacity()) : '';
+}
+
+function renderRoleList(roles) {
+  var q = $('#rolesearch').value.trim().toLowerCase(), box = $('#roles');
+  box.innerHTML = '';
+  var names = Object.keys(ROLE_L).sort();
+  for (var i = 0; i < names.length; i++) {
+    var name = names[i];
+    if (q && name.toLowerCase().indexOf(q) < 0) continue;
+    var cur = state.overrides[name] || hexOf(roles[name]);
+    var row = el('div', 'role-row');
+    var sw = el('i'); sw.style.background = cur; row.appendChild(sw);
+    row.appendChild(el('code', null, name));
+    var inp = document.createElement('input');
+    inp.type = 'color'; inp.value = cur; inp.dataset.role = name;
+    inp.setAttribute('aria-label', 'Colour for ' + name);
+    inp.addEventListener('input', function (e) {
+      state.overrides[e.target.dataset.role] = e.target.value; render();
+    });
+    row.appendChild(inp);
+    box.appendChild(row);
+    if (box.children.length > 220) break;   // keep the DOM cheap while typing
+  }
+}
+
+/* ── Controls ─────────────────────────────────────────────────────────────── */
+
+var SLIDERS = [
+  ['bgHue',      'Background hue',   0, 360, 1,     function (s) { return s.bgHue; },      function (s, v) { s.bgHue = v; },      function (v) { return v.toFixed(0) + '\u00b0'; }],
+  ['bgChroma',   'Background tint',  0, 0.14, 0.002, function (s) { return s.bgChroma; },   function (s, v) { s.bgChroma = v; },   function (v) { return v.toFixed(3); }],
+  ['contrast',   'Contrast',        -0.2, 0.6, 0.01, function (s) { return s.contrast; },   function (s, v) { s.contrast = v; },   function (v) { return v.toFixed(2); }],
+  ['depth',      'Depth',           -0.5, 0.3, 0.01, function (s) { return s.depth; },      function (s, v) { s.depth = v; },      function (v) { return v.toFixed(2); }],
+  ['accentH',    'Accent hue',       0, 360, 1,     function (s) { return s.accent.h; },   function (s, v) { s.accent.h = v; },   function (v) { return v.toFixed(0) + '\u00b0'; }],
+  ['accentC',    'Accent chroma',    0, 0.32, 0.005, function (s) { return s.accent.c; },   function (s, v) { s.accent.c = v; },   function (v) { return v.toFixed(3); }],
+  ['accent2H',   'Second accent hue',0, 360, 1,     function (s) { return s.accent2.h; },  function (s, v) { s.accent2.h = v; },  function (v) { return v.toFixed(0) + '\u00b0'; }],
+  ['accent2C',   'Second accent chroma', 0, 0.32, 0.005, function (s) { return s.accent2.c; }, function (s, v) { s.accent2.c = v; }, function (v) { return v.toFixed(3); }],
+  ['chroma',     'Overall saturation', 0, 1.6, 0.05, function (s) { return s.chroma; },     function (s, v) { s.chroma = v; },     function (v) { return v.toFixed(2) + '\u00d7'; }],
+  ['clipOrigin', 'Clip palette start', 0, 360, 1,   function (s) { return s.clips.origin; }, function (s, v) { s.clips.origin = v; }, function (v) { return v.toFixed(0) + '\u00b0'; }],
+  ['clipSpread', 'Clip palette spread', 0, 360, 5,  function (s) { return s.clips.spread; }, function (s, v) { s.clips.spread = v; }, function (v) { return v.toFixed(0) + '\u00b0'; }],
+  ['clipChroma', 'Clip saturation',  0, 0.28, 0.005, function (s) { return s.clips.chroma; }, function (s, v) { s.clips.chroma = v; }, function (v) { return v.toFixed(3); }],
+  ['clipLight',  'Clip lightness',   0.35, 0.9, 0.01, function (s) { return s.clips.lightness; }, function (s, v) { s.clips.lightness = v; }, function (v) { return v.toFixed(2); }]
+];
+
+function buildControls() {
+  var box = $('#controls');
+  SLIDERS.forEach(function (d) {
+    var lab = el('label', 'field');
+    var head = el('span');
+    head.appendChild(el('span', null, d[1]));
+    var val = el('b', null, ''); val.id = 'v-' + d[0]; head.appendChild(val);
+    lab.appendChild(head);
+    var inp = document.createElement('input');
+    inp.type = 'range'; inp.min = d[2]; inp.max = d[3]; inp.step = d[4]; inp.id = 'c-' + d[0];
+    inp.addEventListener('input', function () { d[6](state, parseFloat(inp.value)); render(); });
+    lab.appendChild(inp);
+    box.appendChild(lab);
+  });
+}
+
+function syncControls() {
+  SLIDERS.forEach(function (d) {
+    var inp = $('#c-' + d[0]);
+    if (inp && document.activeElement !== inp) inp.value = d[5](state);
+    $('#v-' + d[0]).textContent = d[7](d[5](state));
+  });
+  $('#name').value = state.name;
+  document.querySelectorAll('.chip[data-mode]').forEach(function (c) {
+    c.setAttribute('aria-pressed', c.dataset.mode === state.mode);
+  });
+}
+
+function loadTheme(id) {
+  var t = THEMES.filter(function (x) { return x.id === id; })[0];
+  if (t) { state = clone(t); state.name = THEME_PREFIX + t.name; render(); }
+}
+
+/* ── Export ───────────────────────────────────────────────────────────────
+   Safari's blob downloads from file:// are unreliable, so every path has a
+   visible copy-to-clipboard fallback rather than failing silently.          */
+
+function download(blob, filename) {
+  try {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    toast('Saved ' + filename);
+  } catch (e) {
+    toast('Download blocked — use "Copy XML" below');
+  }
+}
+
+function toast(msg) {
+  var t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('show'); }, 2600);
+}
+
+function exportOne() {
+  var name = (state.name || 'Untitled').replace(/[\\/:*?"<>|]/g, '');
+  download(new Blob([lastXml], { type: 'application/xml' }), name + '.ask');
+}
+
+function exportPack() {
+  download(makeZip(packFiles()), 'PixeLabs-Ableton-Themes.zip');
+}
+
+function packFiles() {
+  var files = THEMES.map(function (t) {
+    return { name: t.family + '/' + THEME_PREFIX + t.name + '.ask',
+             content: buildAsk(t, { creator: 'PixeLabs Theme Studio' }) };
+  });
+  files.push({ name: 'INSTALL.txt', content: INSTALL_TEXT });
+  // 0755 so the .command keeps its executable bit and opens on a double-click.
+  files.push({ name: 'install-macos.command', content: installerMac(), mode: 0755 });
+  files.push({ name: 'install-windows.bat', content: installerWindows() });
+  return files;
+}
+
+function isWindows() {
+  var p = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+  return /win/i.test(p);
+}
+
+function exportInstaller(os) {
+  if (os === 'win') {
+    download(new Blob([installerWindows()], { type: 'text/plain' }), 'install-windows.bat');
+  } else {
+    download(new Blob([installerMac()], { type: 'text/plain' }), 'install-macos.command');
+  }
+}
+
+function importAsk(file) {
+  var fr = new FileReader();
+  fr.onload = function () {
+    var res = parseAsk(String(fr.result));
+    if (!res.matched) { toast('No theme entries found in that file'); return; }
+    state.overrides = res.overrides;
+    state.name = file.name.replace(/\.ask$/i, '');
+    render();
+    toast('Imported ' + res.matched + '/' + res.total + ' colours'
+      + (res.conflicts.length ? ' \u2014 ' + res.conflicts.length + ' role(s) had mixed values' : ''));
+  };
+  fr.readAsText(file);
+}
+
+
+/* ── Boot ─────────────────────────────────────────────────────────────────── */
+
+function boot() {
+  var sel = $('#preset');
+  FAMILIES.forEach(function (f) {
+    var g = document.createElement('optgroup'); g.label = f.name;
+    THEMES.filter(function (t) { return t.family === f.id; }).forEach(function (t) {
+      var o = document.createElement('option'); o.value = t.id; o.textContent = t.name; g.appendChild(o);
+    });
+    sel.appendChild(g);
+  });
+  sel.addEventListener('change', function () { loadTheme(sel.value); });
+
+  buildControls();
+  buildMock();
+
+  $('#name').addEventListener('input', function () { state.name = $('#name').value; });
+  $('#wm').addEventListener('input', render);
+  $('#wm').placeholder = 'e.g. PXL-0001 (max ' + lsbCapacity() + ')';
+  $('#rolesearch').addEventListener('input', function () { render(); });
+  $('#reset').addEventListener('click', function () { state.overrides = {}; render(); toast('Overrides cleared'); });
+  document.querySelectorAll('.chip[data-mode]').forEach(function (c) {
+    c.addEventListener('click', function () { state.mode = c.dataset.mode; render(); });
+  });
+  $('#export').addEventListener('click', exportOne);
+  $('#exportpack').textContent = 'Download all ' + THEMES.length + ' (.zip)';
+  $('#installer-mac').addEventListener('click', function () { exportInstaller('mac'); });
+  $('#installer-win').addEventListener('click', function () { exportInstaller('win'); });
+  // Nudge toward the platform we think you're on, without hiding the other one --
+  // detection is a guess, and people do fetch a script for a different machine.
+  $('#installer-' + (isWindows() ? 'win' : 'mac')).classList.add('primary');
+  $('#exportpack').addEventListener('click', exportPack);
+  $('#copy').addEventListener('click', function () {
+    $('#xml').select();
+    try {
+      navigator.clipboard.writeText(lastXml).then(
+        function () { toast('XML copied \u2014 save it as <name>.ask'); },
+        function () { document.execCommand('copy'); toast('XML copied'); });
+    } catch (e) { document.execCommand('copy'); toast('XML copied'); }
+  });
+  $('#file').addEventListener('change', function (e) {
+    if (e.target.files[0]) importAsk(e.target.files[0]);
+    e.target.value = '';
+  });
+
+  // ?theme=<id> deep-links a preset, so the landing page can link straight to one.
+  var want = (location.search.match(/[?&]theme=([\w-]+)/) || [])[1];
+  var start = THEMES.some(function (t) { return t.id === want; }) ? want : 'graphite';
+  sel.value = start;
+  loadTheme(start);
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+
+</script>
+</body>
+</html>
