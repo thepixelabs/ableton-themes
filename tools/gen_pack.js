@@ -22,14 +22,14 @@ for (const t of THEMES) {
   const dir = path.join(root, 'pack', t.family);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, THEME_PREFIX + t.name + '.ask'),
-    buildAsk(t, { creator: 'PixeLabs Theme Studio' }));
+    buildAsk(t, { creator: CREATOR }));
   n++;
 }
 // Same artifact the editor's "Download all" button produces, from the same
 // makeZip path -- one definition, so the two can't drift apart.
 const zipFiles = THEMES.map(t => ({
   name: t.family + '/' + THEME_PREFIX + t.name + '.ask',
-  content: buildAsk(t, { creator: 'PixeLabs Theme Studio' })
+  content: buildAsk(t, { creator: CREATOR })
 }));
 zipFiles.push({ name: 'INSTALL.txt', content: INSTALL_TEXT });
 zipFiles.push({ name: 'install-macos.command', content: installerMac(), mode: 0o755 });

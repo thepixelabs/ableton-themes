@@ -1,3 +1,6 @@
+// Written into every .ask as Creator, and used wherever the tool names itself.
+var CREATOR = 'PixeLabs';
+
 /* ── Colour: sRGB ⇄ OKLCH ───────────────────────────────────────────────────
    Live itself works in OKLab (it ships SessionSlotOklabLCompensationFactor),
    so re-hueing in OKLCH is what keeps contrast and hierarchy intact.        */
@@ -206,7 +209,7 @@ function buildAsk(spec, opts) {
 
   var out = '<?xml version="1.0" encoding="UTF-8"?>\n';
   out += '<Ableton MajorVersion="5" MinorVersion="12.0_12120" SchemaChangeCount="4"'
-       + ' Creator="' + esc(opts.creator || 'PixeLabs Theme Studio') + '" Revision="">\n';
+       + ' Creator="' + esc(opts.creator || CREATOR) + '" Revision="">\n';
   out += '\t<Theme>\n';
   if (opts.watermark) out += '\t\t<!-- ' + esc(opts.watermark) + ' -->\n';
 
@@ -363,7 +366,7 @@ var INSTALL_TEXT = [
 function installerMac() {
   return [
     '#!/bin/bash',
-    '# PixeLabs Theme Studio - install Ableton Live themes (macOS)',
+    '# PixeLabs - install Ableton Live themes (macOS)',
     '# Copies every .ask file next to this script into Ableton\'s Themes folder.',
     'set -u',
     'cd "$(dirname "$0")" || exit 1',
@@ -424,7 +427,7 @@ function installerMac() {
 function installerWindows() {
   return [
     '@echo off',
-    'REM PixeLabs Theme Studio - install Ableton Live themes (Windows)',
+    'REM PixeLabs - install Ableton Live themes (Windows)',
     'REM Copies every .ask file next to this script into Ableton\'s Themes folder.',
     'setlocal enabledelayedexpansion',
     'cd /d "%~dp0"',

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PixeLabs Theme Studio — Ableton Live 12 theme editor</title>
+<title>Ableton Live 12 Theme Editor — PixeLabs</title>
 <meta name="description" content="Free browser-based theme editor for Ableton Live 12. Design a theme, check its contrast, export a .ask file. Works offline.">
 <style>
 :root {
@@ -189,8 +189,8 @@ textarea.fallback {
 <body>
 
 <header>
-  <h1>PixeLabs Theme Studio</h1>
-  <span class="sub">Ableton Live 12 &middot; 276 theme entries &middot; OKLCH</span>
+  <h1>PixeLabs</h1>
+  <span class="sub">Ableton theme editor &middot; Live 12 &middot; 276 entries &middot; OKLCH</span>
   <span class="spacer"></span>
   <a class="sub" href="index.html">&larr; Themes &amp; install guide</a>
 </header>
@@ -815,6 +815,9 @@ function numericSet(spec) {
 
 
 /* ── src/engine.js ── */
+// Written into every .ask as Creator, and used wherever the tool names itself.
+var CREATOR = 'PixeLabs';
+
 /* ── Colour: sRGB ⇄ OKLCH ───────────────────────────────────────────────────
    Live itself works in OKLab (it ships SessionSlotOklabLCompensationFactor),
    so re-hueing in OKLCH is what keeps contrast and hierarchy intact.        */
@@ -1023,7 +1026,7 @@ function buildAsk(spec, opts) {
 
   var out = '<?xml version="1.0" encoding="UTF-8"?>\n';
   out += '<Ableton MajorVersion="5" MinorVersion="12.0_12120" SchemaChangeCount="4"'
-       + ' Creator="' + esc(opts.creator || 'PixeLabs Theme Studio') + '" Revision="">\n';
+       + ' Creator="' + esc(opts.creator || CREATOR) + '" Revision="">\n';
   out += '\t<Theme>\n';
   if (opts.watermark) out += '\t\t<!-- ' + esc(opts.watermark) + ' -->\n';
 
@@ -1180,7 +1183,7 @@ var INSTALL_TEXT = [
 function installerMac() {
   return [
     '#!/bin/bash',
-    '# PixeLabs Theme Studio - install Ableton Live themes (macOS)',
+    '# PixeLabs - install Ableton Live themes (macOS)',
     '# Copies every .ask file next to this script into Ableton\'s Themes folder.',
     'set -u',
     'cd "$(dirname "$0")" || exit 1',
@@ -1241,7 +1244,7 @@ function installerMac() {
 function installerWindows() {
   return [
     '@echo off',
-    'REM PixeLabs Theme Studio - install Ableton Live themes (Windows)',
+    'REM PixeLabs - install Ableton Live themes (Windows)',
     'REM Copies every .ask file next to this script into Ableton\'s Themes folder.',
     'setlocal enabledelayedexpansion',
     'cd /d "%~dp0"',
@@ -1697,7 +1700,7 @@ function render() {
   }
 
   renderRoleList(roles);
-  lastXml = buildAsk(state, { creator: 'PixeLabs Theme Studio', watermark: watermark() });
+  lastXml = buildAsk(state, { creator: CREATOR, watermark: watermark() });
   $('#xml').value = lastXml;
   syncControls();
 }
@@ -1815,7 +1818,7 @@ function exportPack() {
 function packFiles() {
   var files = THEMES.map(function (t) {
     return { name: t.family + '/' + THEME_PREFIX + t.name + '.ask',
-             content: buildAsk(t, { creator: 'PixeLabs Theme Studio' }) };
+             content: buildAsk(t, { creator: CREATOR }) };
   });
   files.push({ name: 'INSTALL.txt', content: INSTALL_TEXT });
   // 0755 so the .command keeps its executable bit and opens on a double-click.

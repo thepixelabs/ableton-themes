@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Ableton MajorVersion="5" MinorVersion="12.0_12120" SchemaChangeCount="4" Creator="PixeLabs Theme Studio" Revision="">
+<Ableton MajorVersion="5" MinorVersion="12.0_12120" SchemaChangeCount="4" Creator="PixeLabs" Revision="">
 	<Theme>
 		<ControlForeground Value="#b0c0ba" />
 		<TextDisabled Value="#697e76" />

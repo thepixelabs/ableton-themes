@@ -1,4 +1,4 @@
-# PixeLabs Theme Studio
+# PixeLabs — Free Ableton Live Themes
 
 **Free themes for Ableton Live 12, and a theme editor that runs in your browser.**
 

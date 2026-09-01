@@ -45,7 +45,7 @@ ok('out-of-gamut chroma clamps to valid sRGB', /^#[0-9a-f]{6}$/.test(oklchToHex(
 console.log('\nThemes');
 let structOk = 0, contrastOk = 0, wmOk = 0;
 for (const t of THEMES) {
-  const xml = buildAsk(t, { creator: 'PixeLabs Theme Studio' });
+  const xml = buildAsk(t, { creator: CREATOR });
   if (!reference || structure(xml) === reference) structOk++;
   if (auditContrast(resolveRoles(t)).every(r => r.pass)) contrastOk++;
   const wm = 'PXL-' + String(THEMES.indexOf(t)).padStart(4, '0');
@@ -62,10 +62,10 @@ console.log('\nImport / export');
 // Round-tripping our own file must be byte-identical: this is the strongest
 // check that reader and writer agree on order, nesting, alpha and VU groups.
 {
-  const orig = buildAsk(THEMES[10], { creator: 'PixeLabs Theme Studio' });
+  const orig = buildAsk(THEMES[10], { creator: CREATOR });
   const s2 = JSON.parse(JSON.stringify(THEMES[10]));
   s2.overrides = parseAsk(orig).overrides;
-  ok('import → export is byte-identical', buildAsk(s2, { creator: 'PixeLabs Theme Studio' }) === orig);
+  ok('import → export is byte-identical', buildAsk(s2, { creator: CREATOR }) === orig);
 }
 // And we must be able to reproduce every colour of any theme Ableton ships.
 // Scope to Live's own 18. The bundle folder is also where custom themes get

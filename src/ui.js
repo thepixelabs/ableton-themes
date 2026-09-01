@@ -144,7 +144,7 @@ function render() {
   }
 
   renderRoleList(roles);
-  lastXml = buildAsk(state, { creator: 'PixeLabs Theme Studio', watermark: watermark() });
+  lastXml = buildAsk(state, { creator: CREATOR, watermark: watermark() });
   $('#xml').value = lastXml;
   syncControls();
 }
@@ -262,7 +262,7 @@ function exportPack() {
 function packFiles() {
   var files = THEMES.map(function (t) {
     return { name: t.family + '/' + THEME_PREFIX + t.name + '.ask',
-             content: buildAsk(t, { creator: 'PixeLabs Theme Studio' }) };
+             content: buildAsk(t, { creator: CREATOR }) };
   });
   files.push({ name: 'INSTALL.txt', content: INSTALL_TEXT });
   // 0755 so the .command keeps its executable bit and opens on a double-click.
