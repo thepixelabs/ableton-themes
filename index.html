@@ -39,7 +39,7 @@
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  --text-xs:   clamp(0.72rem, 0.69rem + 0.16vw, 0.78rem);
+  --text-xs:   clamp(0.82rem, 0.78rem + 0.16vw, 0.86rem);
   --text-sm:   clamp(0.85rem, 0.81rem + 0.2vw,  0.92rem);
   --text-base: clamp(0.96rem, 0.9rem + 0.28vw,  1.05rem);
   --text-lg:   clamp(1.12rem, 1.02rem + 0.5vw,  1.32rem);
@@ -321,13 +321,12 @@ h3{ font-size:var(--text-lg); }
   display:grid; grid-template-columns:1fr; gap:var(--space-7);
   align-items:start;
 }
-@media (min-width: 980px){
+@media (min-width: 1120px){
   .hero-inner{ grid-template-columns:0.95fr 1.05fr; }
 }
 /* Once the 72rem shell is at full width, weight the visual column enough that
-   the mock's 560px fits outright. Below this it stays a scroller, which is
-   fine -- but the hero is the first impression and shouldn't look clipped. */
-@media (min-width: 1120px){
+   the mock's 560px fits outright. */
+@media (min-width: 1280px){
   .hero-inner{ grid-template-columns:0.85fr 1.15fr; }
 }
 /* Grid items default to a content-based automatic minimum width, which lets
@@ -372,6 +371,11 @@ h3{ font-size:var(--text-lg); }
 .preview-head{
   display:flex; align-items:baseline; justify-content:space-between;
   gap:var(--space-3); flex-wrap:wrap; margin-bottom:var(--space-3);
+}
+.tablist{ flex-wrap:wrap; }
+@media (max-width: 620px){
+  .preview-head{ align-items:stretch; }
+  .tablist{ width:100%; }
 }
 .preview-label{ font-size:var(--text-xs); color:var(--text-2); font-family:var(--font-mono); }
 
@@ -701,6 +705,23 @@ h3{ font-size:var(--text-lg); }
 @media (max-width: 800px) {
   .editor-cta { display: none !important; }
   .desktop-note { display: block; }
+}
+
+/* Touch sizing. Comfortable targets on phones and tablets, keyed off pointer
+   type rather than width so a narrow desktop window keeps its tighter chrome. */
+@media (hover: none) and (pointer: coarse) {
+  .tab, .copy-btn, .btn { min-height: 44px; }
+  .tab, .copy-btn { padding-block: 10px; }
+  .brand { padding-block: 6px; }
+  .footer-links a, .primary-nav a {
+    display: inline-block; padding-block: 8px; min-height: 40px;
+  }
+  .faq-item summary { padding-block: var(--space-4); }
+  .path-text { font-size: var(--text-sm); }
+}
+@media (max-width: 620px) {
+  .hero-cta { flex-direction: column; align-items: stretch; }
+  .hero-cta .btn { text-align: center; }
 }
 </style>
 <script type="application/ld+json">
