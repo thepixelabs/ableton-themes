@@ -3,17 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ableton Live 12 Theme Editor by PixeLabs</title>
-<meta name="description" content="Free browser-based theme editor for Ableton Live 12. Design a theme, check its contrast, export a .ask file. Works offline.">
+<title>Online Ableton Theme Editor for Live 12</title>
+<meta name="description" content="Free online Ableton theme editor for Live 12. Design a theme in your browser, check its contrast, export a .ask file. No install, works offline too.">
 <style>
 /*__CSS__*/
 </style>
 </head>
 <body>
 
+<!-- Touch devices get this instead of the editor. Three columns, a live preview
+     and 186 colour pickers do not survive a phone, and a half working tool is
+     worse than an honest redirect. -->
+<div class="touch-block" id="touchblock">
+  <div>
+    <h1>Desktop only</h1>
+    <p>
+      The online Ableton theme editor needs a mouse and a wide screen. It will not
+      work properly here.
+    </p>
+    <p>
+      Open <strong>abletonthemes.pixelabs.net</strong> on a computer to design a theme.
+      The 45 ready made themes download and install fine from any device.
+    </p>
+    <a class="touch-block-link" href="index.html">Back to the themes</a>
+  </div>
+</div>
+
+
 <header>
   <h1>PixeLabs</h1>
-  <span class="sub">Ableton theme editor &middot; Live 12 &middot; 276 entries &middot; OKLCH</span>
+  <span class="sub">Online Ableton theme editor &middot; Live 12 &middot; 276 entries &middot; OKLCH</span>
   <span class="spacer"></span>
   <a class="sub" href="index.html">&larr; Themes &amp; install guide</a>
 </header>
@@ -21,7 +40,7 @@
 <div class="layout">
 
   <!-- ── controls ─────────────────────────────────────────────────────── -->
-  <section aria-label="Theme controls">
+  <section id="col-controls" aria-label="Theme controls">
     <h2 class="panel-title">Start from</h2>
     <div class="group">
       <select id="preset" aria-label="Preset theme"></select>
@@ -39,7 +58,7 @@
   </section>
 
   <!-- ── preview ──────────────────────────────────────────────────────── -->
-  <section aria-label="Preview">
+  <section id="col-preview" aria-label="Preview">
     <h2 class="panel-title">Preview</h2>
     <div class="mock" id="mock"></div>
     <p class="note" style="margin-top:10px">
@@ -65,7 +84,7 @@
   </section>
 
   <!-- ── output ───────────────────────────────────────────────────────── -->
-  <section aria-label="Contrast and export">
+  <section id="col-output" aria-label="Contrast and export">
     <h2 class="panel-title">Contrast</h2>
     <div class="audit" id="audit"></div>
     <p class="note" style="margin-top:8px">

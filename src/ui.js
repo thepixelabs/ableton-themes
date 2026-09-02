@@ -40,10 +40,13 @@ function applyPreview(roles, mode) {
 
 /* ── Ableton mock markup (built once, recoloured via CSS variables) ───────── */
 
-var TRACKS = ['Kick', 'Bass', 'Lead', 'Pad', 'Perc', 'FX'];
+// A real session has more than five scenes; a short grid left the preview
+// column mostly empty on a large screen, which is the opposite of useful.
+var TRACKS = ['Kick', 'Bass', 'Lead', 'Pad', 'Perc', 'Keys', 'FX'];
 var CLIPS = [
-  [1, 5, 9, 0, 12, 0], [2, 6, 0, 11, 13, 3], [0, 7, 10, 4, 0, 14],
-  [3, 0, 8, 15, 16, 5], [4, 8, 0, 0, 2, 0]
+  [1, 5, 9, 0, 12, 0, 14], [2, 6, 0, 11, 13, 3, 0], [0, 7, 10, 4, 0, 14, 6],
+  [3, 0, 8, 15, 16, 5, 0], [4, 8, 0, 0, 2, 0, 11], [5, 9, 12, 7, 0, 8, 2],
+  [0, 10, 13, 0, 4, 0, 9], [6, 0, 0, 14, 15, 12, 0]
 ];
 
 function buildMock() {

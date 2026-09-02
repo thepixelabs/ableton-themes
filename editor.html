@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ableton Live 12 Theme Editor by PixeLabs</title>
-<meta name="description" content="Free browser-based theme editor for Ableton Live 12. Design a theme, check its contrast, export a .ask file. Works offline.">
+<title>Online Ableton Theme Editor for Live 12</title>
+<meta name="description" content="Free online Ableton theme editor for Live 12. Design a theme in your browser, check its contrast, export a .ask file. No install, works offline too.">
 <style>
 :root {
   --ink: #16171b; --ink-2: #1d1f24; --ink-3: #26282f;
@@ -26,9 +26,57 @@ header h1 { font-size: 15px; }
 header .sub { color: var(--fg-faint); font-size: 12px; }
 header .spacer { flex: 1; }
 
-.layout { display: grid; grid-template-columns: 290px minmax(0, 1fr) 290px; gap: 1px; background: var(--line); }
-.layout > section { background: var(--ink); padding: 16px; min-width: 0; }
-@media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+/* ── Shell ─────────────────────────────────────────────────────────────────
+   The editor is a tool, not a document: it should fill the window and never
+   scroll as a whole. Each column scrolls on its own so the preview stays put
+   while you work through the controls. */
+body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+header { flex: none; }
+
+.layout {
+  flex: 1; min-height: 0;
+  display: grid;
+  /* Side columns grow with the viewport instead of staying pinned at 290px,
+     which left large screens mostly empty. */
+  grid-template-columns: clamp(272px, 19vw, 380px) minmax(0, 1fr) clamp(272px, 19vw, 380px);
+  gap: 1px; background: var(--line);
+}
+.layout > section { background: var(--ink); padding: 16px; min-width: 0; overflow-y: auto; }
+
+/* Preview column: the mock takes the space left over, the rest sits under it. */
+#col-preview { display: flex; flex-direction: column; gap: 0; }
+#col-preview .mock { flex: 0 0 auto; display: flex; flex-direction: column; }
+#col-preview .mock-body { flex: 1; min-height: 0; }
+
+@media (max-width: 1100px) {
+  body { height: auto; overflow: auto; }
+  .layout { grid-template-columns: 1fr; }
+  .layout > section { overflow-y: visible; }
+  #col-preview .mock { max-height: none; }
+}
+
+/* ── Touch devices ─────────────────────────────────────────────────────────
+   Three columns, a live preview and 186 colour pickers do not survive a phone
+   or a tablet. Blocking is more honest than shipping a broken layout. */
+.touch-block { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .touch-block {
+    display: flex; position: fixed; inset: 0; z-index: 999;
+    align-items: center; justify-content: center; padding: 24px 20px;
+    background: var(--ink); text-align: center;
+  }
+  .touch-block > div { width: 100%; max-width: min(34rem, 100%); }
+  .touch-block h1 { font-size: 22px; margin-bottom: 14px; }
+  .touch-block p { color: var(--fg-dim); font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+  .touch-block strong { color: var(--fg); }
+  .touch-block-link {
+    display: inline-block; margin-top: 10px; padding: 10px 18px;
+    background: var(--brand); color: #1a1004; border-radius: var(--radius);
+    font-weight: 600; text-decoration: none;
+  }
+  body > header, body > .layout, body > .toast { display: none !important; }
+  body { height: auto; overflow: auto; }
+}
 
 .panel-title {
   font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
@@ -116,7 +164,8 @@ textarea.fallback {
    Live: browser, session grid, mixer with meters, transport, device chain. */
 .mock {
   border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
-  font: 10px/1.35 var(--sans); user-select: none; background: var(--m-desktop);
+  font: clamp(10px, 0.72vw, 14px)/1.35 var(--sans);
+  user-select: none; background: var(--m-desktop);
 }
 .mock-transport {
   display: flex; align-items: center; gap: 7px; padding: 5px 8px;
@@ -129,20 +178,20 @@ textarea.fallback {
 .mock-transport .pill.on { background: var(--m-accent); color: var(--m-onaccent); }
 .mock-transport .pill.rec { background: var(--m-record); color: var(--m-onaccent); }
 .mock-transport .pill.play { background: var(--m-play); color: var(--m-onaccent); }
-.mock-body { display: grid; grid-template-columns: 116px minmax(0,1fr); min-height: 268px; }
+.mock-body { display: grid; grid-template-columns: clamp(116px, 9vw, 168px) minmax(0,1fr); min-height: 268px; }
 .mock-browser { background: var(--m-browserbar); border-right: 1px solid var(--m-frame); padding: 5px 0; }
 .mock-browser .cat { padding: 3px 9px; color: var(--m-browsertext); }
 .mock-browser .cat.sel { background: var(--m-highlight); color: var(--m-text); }
 .mock-browser .hd { padding: 3px 9px; color: var(--m-accent); font-weight: 600; }
 .mock-main { display: flex; flex-direction: column; min-width: 0; }
-.mock-tracks { flex: 1; display: flex; gap: 1px; padding: 5px; background: var(--m-surface); overflow: hidden; align-content: start; }
+.mock-tracks { display: flex; gap: 1px; padding: 5px; background: var(--m-surface); overflow: hidden; align-content: start; }
 .mock-track { flex: 1 1 0; min-width: 0; }
 .mock-track .hdr {
   padding: 2px 5px; color: var(--m-text); background: var(--m-trackhdr);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-radius: 2px 2px 0 0;
 }
 .mock-slot {
-  height: 15px; margin-top: 1px; border-radius: 2px; display: flex; align-items: center;
+  height: clamp(15px, 1.35vw, 22px); margin-top: 1px; border-radius: 2px; display: flex; align-items: center;
   padding: 0 4px; color: var(--m-onclip); background: var(--m-control); overflow: hidden;
 }
 .mock-slot.empty { background: var(--m-control); }
@@ -152,7 +201,7 @@ textarea.fallback {
 .mock-scenes .mock-slot { background: var(--m-highlight); color: var(--m-text); justify-content: center; }
 .mock-mixer { display: flex; gap: 1px; padding: 4px 5px 6px; background: var(--m-surface); }
 .mock-strip {
-  flex: 1 1 0; min-width: 0; height: 44px;
+  flex: 1 1 0; min-width: 0; height: clamp(44px, 5vh, 78px);
   display: flex; gap: 3px; align-items: flex-end; justify-content: center;
 }
 .mock-meter { width: 7px; flex: none; height: 100%; background: var(--m-meterbg); border-radius: 1px; position: relative; overflow: hidden; }
@@ -188,9 +237,28 @@ textarea.fallback {
 </head>
 <body>
 
+<!-- Touch devices get this instead of the editor. Three columns, a live preview
+     and 186 colour pickers do not survive a phone, and a half working tool is
+     worse than an honest redirect. -->
+<div class="touch-block" id="touchblock">
+  <div>
+    <h1>Desktop only</h1>
+    <p>
+      The online Ableton theme editor needs a mouse and a wide screen. It will not
+      work properly here.
+    </p>
+    <p>
+      Open <strong>abletonthemes.pixelabs.net</strong> on a computer to design a theme.
+      The 45 ready made themes download and install fine from any device.
+    </p>
+    <a class="touch-block-link" href="index.html">Back to the themes</a>
+  </div>
+</div>
+
+
 <header>
   <h1>PixeLabs</h1>
-  <span class="sub">Ableton theme editor &middot; Live 12 &middot; 276 entries &middot; OKLCH</span>
+  <span class="sub">Online Ableton theme editor &middot; Live 12 &middot; 276 entries &middot; OKLCH</span>
   <span class="spacer"></span>
   <a class="sub" href="index.html">&larr; Themes &amp; install guide</a>
 </header>
@@ -198,7 +266,7 @@ textarea.fallback {
 <div class="layout">
 
   <!-- ── controls ─────────────────────────────────────────────────────── -->
-  <section aria-label="Theme controls">
+  <section id="col-controls" aria-label="Theme controls">
     <h2 class="panel-title">Start from</h2>
     <div class="group">
       <select id="preset" aria-label="Preset theme"></select>
@@ -216,7 +284,7 @@ textarea.fallback {
   </section>
 
   <!-- ── preview ──────────────────────────────────────────────────────── -->
-  <section aria-label="Preview">
+  <section id="col-preview" aria-label="Preview">
     <h2 class="panel-title">Preview</h2>
     <div class="mock" id="mock"></div>
     <p class="note" style="margin-top:10px">
@@ -242,7 +310,7 @@ textarea.fallback {
   </section>
 
   <!-- ── output ───────────────────────────────────────────────────────── -->
-  <section aria-label="Contrast and export">
+  <section id="col-output" aria-label="Contrast and export">
     <h2 class="panel-title">Contrast</h2>
     <div class="audit" id="audit"></div>
     <p class="note" style="margin-top:8px">
@@ -1592,10 +1660,13 @@ function applyPreview(roles, mode) {
 
 /* ── Ableton mock markup (built once, recoloured via CSS variables) ───────── */
 
-var TRACKS = ['Kick', 'Bass', 'Lead', 'Pad', 'Perc', 'FX'];
+// A real session has more than five scenes; a short grid left the preview
+// column mostly empty on a large screen, which is the opposite of useful.
+var TRACKS = ['Kick', 'Bass', 'Lead', 'Pad', 'Perc', 'Keys', 'FX'];
 var CLIPS = [
-  [1, 5, 9, 0, 12, 0], [2, 6, 0, 11, 13, 3], [0, 7, 10, 4, 0, 14],
-  [3, 0, 8, 15, 16, 5], [4, 8, 0, 0, 2, 0]
+  [1, 5, 9, 0, 12, 0, 14], [2, 6, 0, 11, 13, 3, 0], [0, 7, 10, 4, 0, 14, 6],
+  [3, 0, 8, 15, 16, 5, 0], [4, 8, 0, 0, 2, 0, 11], [5, 9, 12, 7, 0, 8, 2],
+  [0, 10, 13, 0, 4, 0, 9], [6, 0, 0, 14, 15, 12, 0]
 ];
 
 function buildMock() {

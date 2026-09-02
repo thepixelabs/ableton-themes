@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free Ableton Live Themes by PixeLabs</title>
+<title>Free Ableton Live Themes and Online Ableton Theme Editor</title>
 <meta name="description" content="Free browser-based theme editor and 45 ready-made themes for Ableton Live 12. OKLCH colour, WCAG-checked contrast, custom clip palettes. No cost, no catch.">
 
 <!-- Open Graph / social preview. TODO: create and host a real 1200x630 og:image once
      screenshots exist -- a data: URI is impractical at that size, so this needs an
      actual asset file added to the repo before it will render a preview image. -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Free Ableton Live Themes by PixeLabs">
+<meta property="og:title" content="Free Ableton Live Themes and Online Ableton Theme Editor">
 <meta property="og:description" content="Free browser-based theme editor and 45 ready-made themes for Ableton Live 12. OKLCH colour, WCAG-checked contrast, custom clip palettes. No cost, no catch.">
 <meta property="og:url" content="https://abletonthemes.pixelabs.net/">
 <meta name="twitter:card" content="summary">
@@ -682,6 +682,24 @@ h3{ font-size:var(--text-lg); }
   max-width:52rem;
 }
 </style>
+<style>
+/* The editor needs a pointer and roughly 1100px of width to be usable at all.
+   Touch devices get the notice instead of a link into a broken experience. */
+.touch-only { display: none; }
+.desktop-note {
+  display: none; margin-top: var(--space-3); padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-1); border-radius: var(--radius-md);
+  background: var(--bg-1); color: var(--text-1); font-size: var(--text-sm); max-width: 46ch;
+}
+@media (hover: none) and (pointer: coarse) {
+  .editor-cta { display: none !important; }
+  .desktop-note { display: block; }
+}
+@media (max-width: 800px) {
+  .editor-cta { display: none !important; }
+  .desktop-note { display: block; }
+}
+</style>
 </head>
 <body>
 
@@ -704,7 +722,7 @@ h3{ font-size:var(--text-lg); }
       <a href="#pack">The pack</a>
       <a href="#install">Install</a>
     </nav>
-    <a class="btn btn-primary" href="editor.html">Open the Editor</a>
+    <a class="btn btn-primary editor-cta" href="editor.html">Open the online editor</a>
   </div>
 </header>
 
@@ -715,16 +733,21 @@ h3{ font-size:var(--text-lg); }
     <div class="wrap hero-inner">
       <div class="hero-copy">
         <span class="eyebrow">Free · Ableton Live 12</span>
-        <h1>45 free Ableton Live themes, or design your own.</h1>
-        <p class="lede">A browser-based editor for Ableton Live 12.
+        <h1>45 free Ableton Live themes, and an online editor to design your own.</h1>
+        <p class="lede">An online Ableton theme editor that runs in your browser, no install.
           Design against a
           live UI mock-up, check contrast in OKLCH, export a ready <code>.ask</code>
           file. Or skip the editor: the pack has 45 themes across five families,
           already WCAG-checked.</p>
         <div class="hero-cta">
-          <a class="btn btn-primary" href="editor.html">Open the Editor</a>
+          <a class="btn btn-primary editor-cta" href="editor.html">Open the online editor</a>
           <a class="btn btn-secondary" href="#pack">Browse the pack</a>
         </div>
+        <p class="desktop-note">
+          The online editor needs a mouse and a wide screen, so it is desktop only.
+          Open this page on a computer to use it. The 45 ready made themes below
+          download and install fine from any device.
+        </p>
         <div class="trust-badges">
           <span class="badge">All 276 styleable entries</span>
           <span class="badge">OKLCH colour space, not RGB</span>
@@ -1371,9 +1394,9 @@ h3{ font-size:var(--text-lg); }
       </div>
       <div class="footer-links">
         <div>
-          <h4>Product</h4>
+          <h4>Get started</h4>
           <ul>
-            <li><a href="editor.html">Open the Editor</a></li>
+            <li><a class="editor-cta" href="editor.html">Open the online editor</a></li>
             <li><a href="#pack">The pack</a></li>
             <li><a href="#install">Install guide</a></li>
           </ul>
