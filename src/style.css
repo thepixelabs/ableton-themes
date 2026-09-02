@@ -58,7 +58,7 @@ header { flex: none; }
     background: var(--ink); text-align: center;
   }
   .touch-block > div { width: 100%; max-width: min(34rem, 100%); }
-  .touch-block h1 { font-size: 22px; margin-bottom: 14px; }
+  .touch-title { font-size: 22px; font-weight: 600; margin: 0 0 14px; letter-spacing: -0.01em; }
   .touch-block p { color: var(--fg-dim); font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
   .touch-block strong { color: var(--fg); }
   .touch-block-link {

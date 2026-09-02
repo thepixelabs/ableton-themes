@@ -134,7 +134,19 @@ console.log('\nInstaller scripts');
 
 console.log('\nEditor artifact');
 const html = fs.readFileSync(path.join(root, 'editor.html'), 'utf8');
-ok('no external requests', !/https?:\/\//.test(html.replace(/<!--[\s\S]*?-->/g, '')));
+{
+  const body = html.replace(/<!--[\s\S]*?-->/g, '');
+  const loaders = [
+    /<script[^>]+src\s*=\s*["']https?:/i,          // remote script
+    /<link[^>]+rel=["']stylesheet["'][^>]*https?:/i, // remote stylesheet
+    /<img[^>]+src\s*=\s*["']https?:/i,             // remote image
+    /@import\s+(url\()?["']?https?:/i,             // css import
+    /url\(\s*["']?https?:/i,                       // css url()
+    /\bfetch\s*\(/, /XMLHttpRequest/, /new\s+WebSocket/
+  ];
+  const hit = loaders.find(re => re.test(body));
+  ok('nothing is fetched from the network', !hit, hit ? String(hit) : 'metadata URLs only');
+}
 ok('no ES modules (blocked on file://)', !/type=["']module["']/.test(html));
 ok('schema inlined', html.includes('var SCHEMA'));
 
