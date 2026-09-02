@@ -1,0 +1,14 @@
+# Generated files. Marked so GitHub collapses them by default in commit and PR
+# diffs: regenerating the pack touches 53 files at once, which buries the real
+# change. They stay fully tracked and versioned, this only affects the diff view.
+pack/**/*.ask            linguist-generated=true
+pack/*.zip               binary
+editor.html              linguist-generated=true
+build/schema.js          linguist-generated=true
+install-macos.command    linguist-generated=true
+install-windows.bat      linguist-generated=true
+
+# Shell scripts keep LF regardless of platform; a CRLF .command will not run.
+*.command                text eol=lf
+*.bat                    text eol=crlf
+*.ask                    text eol=lf
