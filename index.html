@@ -565,6 +565,9 @@ h3{ font-size:var(--text-lg); }
 .family-grid{
   display:grid; gap:var(--space-4);
   grid-template-columns:1fr;
+  /* Cards size to their own content. Without this, expanding one theme list
+     stretches every sibling to match and strands their swatches at the bottom. */
+  align-items:start;
 }
 @media (min-width:620px){ .family-grid{ grid-template-columns:repeat(2, 1fr); } }
 @media (min-width:980px){ .family-grid{ grid-template-columns:repeat(4, 1fr); } }
@@ -577,6 +580,30 @@ h3{ font-size:var(--text-lg); }
 .family-card p{ color:var(--f-text-dim); font-size:var(--text-sm); flex:1; }
 .swatch-strip{ display:flex; gap:4px; }
 .swatch-strip span{ width:16px; height:16px; border-radius:4px; }
+/* Per theme downloads. Collapsed by default: 45 links laid out flat would
+   dwarf the rest of the page, and most people want the zip. Open it and the
+   family's themes are small pills that wrap, so ten fit in about three rows. */
+.theme-list{ margin-top:var(--space-3); }
+.theme-list summary{
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-2);
+  cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:6px;
+}
+.theme-list summary::-webkit-details-marker{ display:none; }
+.theme-list summary::after{ content:"+"; color:var(--accent-cyan); font-weight:700; }
+.theme-list[open] summary::after{ content:"\00d7"; }
+.theme-list summary:hover{ color:var(--text-1); }
+.theme-list ul{
+  list-style:none; margin:var(--space-3) 0 0; padding:0;
+  display:flex; flex-wrap:wrap; gap:6px;
+}
+.theme-list a{
+  display:inline-block; font-size:var(--text-xs); line-height:1.2;
+  padding:5px 10px; border-radius:var(--radius-pill);
+  background:var(--bg-2); border:1px solid var(--border-0);
+  color:var(--text-1); text-decoration:none; white-space:nowrap;
+}
+.theme-list a:hover{ border-color:var(--accent-cyan); color:var(--accent-cyan); }
+
 .family-count{ font-family:var(--font-mono); font-size:var(--text-xs); color:var(--f-text-dim); }
 
 .pack-cta{ display:flex; gap:var(--space-3); flex-wrap:wrap; margin-top:var(--space-6); align-items:center; }
@@ -745,6 +772,8 @@ h3{ font-size:var(--text-lg); }
   .footer-links a, .primary-nav a {
     display: inline-block; padding-block: 8px; min-height: 40px;
   }
+  .theme-list summary { padding-block: 10px; min-height: 40px; }
+  .theme-list a { padding: 10px 14px; min-height: 40px; }
   .faq-item summary { padding-block: var(--space-4); }
   .path-text { font-size: var(--text-sm); }
 }
@@ -1388,7 +1417,21 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
-          <span class="family-count">10 themes</span>
+            <details class="theme-list">
+              <summary>10 themes, download one</summary>
+              <ul>
+                <li><a href="pack/dark-pro/PXL%20Graphite.ask" download>Graphite</a></li>
+                <li><a href="pack/dark-pro/PXL%20Slate.ask" download>Slate</a></li>
+                <li><a href="pack/dark-pro/PXL%20Obsidian.ask" download>Obsidian</a></li>
+                <li><a href="pack/dark-pro/PXL%20Ink.ask" download>Ink</a></li>
+                <li><a href="pack/dark-pro/PXL%20Basalt.ask" download>Basalt</a></li>
+                <li><a href="pack/dark-pro/PXL%20Umber.ask" download>Umber</a></li>
+                <li><a href="pack/dark-pro/PXL%20Moss.ask" download>Moss</a></li>
+                <li><a href="pack/dark-pro/PXL%20Petrol.ask" download>Petrol</a></li>
+                <li><a href="pack/dark-pro/PXL%20Carbon.ask" download>Carbon</a></li>
+                <li><a href="pack/dark-pro/PXL%20Nightshift.ask" download>Nightshift</a></li>
+              </ul>
+            </details>
         </article>
         <article class="family-card" data-family="neon">
           <h3>Neon</h3>
@@ -1398,7 +1441,21 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
-          <span class="family-count">10 themes</span>
+            <details class="theme-list">
+              <summary>10 themes, download one</summary>
+              <ul>
+                <li><a href="pack/neon/PXL%20Goa.ask" download>Goa</a></li>
+                <li><a href="pack/neon/PXL%20Zenon.ask" download>Zenon</a></li>
+                <li><a href="pack/neon/PXL%20Ultraviolet.ask" download>Ultraviolet</a></li>
+                <li><a href="pack/neon/PXL%20Acid.ask" download>Acid</a></li>
+                <li><a href="pack/neon/PXL%20Vaporwave.ask" download>Vaporwave</a></li>
+                <li><a href="pack/neon/PXL%20Plasma.ask" download>Plasma</a></li>
+                <li><a href="pack/neon/PXL%20Nitrous.ask" download>Nitrous</a></li>
+                <li><a href="pack/neon/PXL%20Darkpsy.ask" download>Darkpsy</a></li>
+                <li><a href="pack/neon/PXL%20Spectra.ask" download>Spectra</a></li>
+                <li><a href="pack/neon/PXL%20Hypnotic.ask" download>Hypnotic</a></li>
+              </ul>
+            </details>
         </article>
         <article class="family-card" data-family="retro">
           <h3>Retro</h3>
@@ -1408,7 +1465,21 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
-          <span class="family-count">10 themes</span>
+            <details class="theme-list">
+              <summary>10 themes, download one</summary>
+              <ul>
+                <li><a href="pack/retro/PXL%20Oxblood.ask" download>Oxblood</a></li>
+                <li><a href="pack/retro/PXL%20Olive%20Drab.ask" download>Olive Drab</a></li>
+                <li><a href="pack/retro/PXL%20Amber%20CRT.ask" download>Amber CRT</a></li>
+                <li><a href="pack/retro/PXL%20Teak.ask" download>Teak</a></li>
+                <li><a href="pack/retro/PXL%20Rackmount.ask" download>Rackmount</a></li>
+                <li><a href="pack/retro/PXL%20Bakelite.ask" download>Bakelite</a></li>
+                <li><a href="pack/retro/PXL%20Sea%20Foam.ask" download>Sea Foam</a></li>
+                <li><a href="pack/retro/PXL%20Tape.ask" download>Tape</a></li>
+                <li><a href="pack/retro/PXL%20Blueprint.ask" download>Blueprint</a></li>
+                <li><a href="pack/retro/PXL%20Valve.ask" download>Valve</a></li>
+              </ul>
+            </details>
         </article>
         <article class="family-card" data-family="light">
           <h3>Light</h3>
@@ -1418,7 +1489,21 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
-          <span class="family-count">10 themes</span>
+            <details class="theme-list">
+              <summary>10 themes, download one</summary>
+              <ul>
+                <li><a href="pack/light/PXL%20Daylight.ask" download>Daylight</a></li>
+                <li><a href="pack/light/PXL%20Paper.ask" download>Paper</a></li>
+                <li><a href="pack/light/PXL%20Linen.ask" download>Linen</a></li>
+                <li><a href="pack/light/PXL%20Overcast.ask" download>Overcast</a></li>
+                <li><a href="pack/light/PXL%20Sandstone.ask" download>Sandstone</a></li>
+                <li><a href="pack/light/PXL%20Mint.ask" download>Mint</a></li>
+                <li><a href="pack/light/PXL%20Porcelain.ask" download>Porcelain</a></li>
+                <li><a href="pack/light/PXL%20Chalk.ask" download>Chalk</a></li>
+                <li><a href="pack/light/PXL%20Sky.ask" download>Sky</a></li>
+                <li><a href="pack/light/PXL%20Fog.ask" download>Fog</a></li>
+              </ul>
+            </details>
         </article>
         <article class="family-card" data-family="cyberpunk">
           <h3>Cyberpunk</h3>
@@ -1428,7 +1513,16 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
-          <span class="family-count">5 themes</span>
+            <details class="theme-list">
+              <summary>5 themes, download one</summary>
+              <ul>
+                <li><a href="pack/cyberpunk/PXL%20Neon%20Circuit.ask" download>Neon Circuit</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Redline.ask" download>Redline</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Nightwire.ask" download>Nightwire</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Lavender%20Haze.ask" download>Lavender Haze</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Chrome%20Alley.ask" download>Chrome Alley</a></li>
+              </ul>
+            </details>
         </article>
       </div>
 

@@ -132,6 +132,25 @@ console.log('\nInstaller scripts');
   ok('Windows installer uses CRLF line endings', win.includes('\r\n'));
 }
 
+console.log('\nLanding page');
+{
+  const page = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const linked = [...page.matchAll(/href="(pack\/[^"]+\.ask)"/g)]
+    .map(m => decodeURIComponent(m[1]));
+  const onDisk = [];
+  for (const fam of new Set(THEMES.map(t => t.family))) {
+    for (const f of fs.readdirSync(path.join(root, 'pack', fam))) {
+      if (f.endsWith('.ask')) onDisk.push(`pack/${fam}/${f}`);
+    }
+  }
+  const dead = linked.filter(l => !onDisk.includes(l));
+  const unlinked = onDisk.filter(f => !linked.includes(f));
+  ok('every per-theme download link resolves to a real file', dead.length === 0,
+     dead.length ? dead.slice(0, 3).join(', ') : linked.length + ' links');
+  ok('every theme in the pack is linked from the page', unlinked.length === 0,
+     unlinked.length ? unlinked.slice(0, 3).join(', ') : onDisk.length + ' themes');
+}
+
 console.log('\nEditor artifact');
 const html = fs.readFileSync(path.join(root, 'editor.html'), 'utf8');
 {
