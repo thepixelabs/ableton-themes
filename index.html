@@ -1446,6 +1446,30 @@ h3{ font-size:var(--text-lg); }
           Ableton Live install directory.
         </p>
       </div>
+
+      <div class="path-block">
+        <h4>Or let a script find Ableton for you</h4>
+        <p class="path-note">
+          A browser cannot look at your disk, so it can never find your Ableton install.
+          These scripts can. Put one in the same folder as your <code>.ask</code> files and
+          run it: it locates Ableton, copies every theme sitting next to it, and refuses to
+          run while Live is open. Both are plain text, so read them first if you like.
+        </p>
+        <div class="hero-cta" style="margin-top:var(--space-3)">
+          <a class="btn btn-secondary" href="install-macos.command" download>macOS installer</a>
+          <a class="btn btn-secondary" href="install-windows.bat" download>Windows installer</a>
+        </div>
+        <p class="path-note" style="margin-top:var(--space-3)">
+          On macOS, downloading the script directly strips its executable bit, so the copy
+          inside <a href="pack/pixelabs-theme-pack.zip">the theme pack zip</a> is the easier
+          route: unzip it and the script is ready to run. Either way macOS quarantines
+          scripts from the web, so the first time you must right click it and choose
+          <strong>Open</strong> rather than double clicking. On Windows, if SmartScreen
+          warns you, choose <strong>More info</strong> then <strong>Run anyway</strong>, and
+          if files fail to copy, right click the script and choose
+          <strong>Run as administrator</strong>.
+        </p>
+      </div>
     </div>
   </section>
 

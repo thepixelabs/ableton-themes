@@ -37,6 +37,12 @@ zipFiles.push({ name: 'install-windows.bat', content: installerWindows() });
 // Kept inside an async IIFE on purpose: a top-level await would make this file
 // ESM, and ESM is strict mode, where `var` inside eval() no longer leaks to the
 // enclosing scope -- which is how the sources above are loaded.
+// Standalone copies at the repo root so the site can link to them directly and
+// so anyone can read them before running them.
+fs.writeFileSync(path.join(root, 'install-macos.command'), installerMac(), { mode: 0o755 });
+fs.writeFileSync(path.join(root, 'install-windows.bat'), installerWindows());
+console.log('wrote install-macos.command and install-windows.bat');
+
 const zipPath = path.join(root, 'pack', 'pixelabs-theme-pack.zip');
 (async () => {
   const bytes = new Uint8Array(await makeZip(zipFiles).arrayBuffer());
