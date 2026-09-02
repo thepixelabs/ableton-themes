@@ -104,7 +104,7 @@ textarea.fallback {
 @media (prefers-reduced-motion: reduce) { .toast { transition: none; } * { animation: none !important; } }
 
 /* ── Ableton mock ──────────────────────────────────────────────────────────
-   Not pixel-exact — enough structure to judge a palette without restarting
+   Not pixel-exact, but enough structure to judge a palette without restarting
    Live: browser, session grid, mixer with meters, transport, device chain. */
 .mock {
   border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;

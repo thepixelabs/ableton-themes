@@ -1,6 +1,6 @@
 /* ── Theme families ────────────────────────────────────────────────────────
    Each entry is a palette spec. bgHue/bgChroma tint the neutral chassis;
-   accent/accent2 drive the highlight colours; clips recolours Clip1–16, which
+   accent/accent2 drive the highlight colours; clips recolours Clip1 to Clip16, which
    Live leaves identical in all 18 of its own themes.                        */
 
 // Prepended to every exported filename and theme name so all PixeLabs themes
@@ -25,13 +25,13 @@ function spec(o) {
 
 var FAMILIES = [
   { id: 'dark-pro', name: 'Dark Pro',
-    blurb: 'Low-fatigue studio darks. Restrained chroma, wide tonal separation — built for long sessions.' },
+    blurb: 'Low-fatigue studio darks. Restrained chroma, wide tonal separation, built for long sessions.' },
   { id: 'neon', name: 'Neon',
     blurb: 'High-chroma accents on deep chassis. Psytrance and synthwave palettes that still pass contrast.' },
   { id: 'retro', name: 'Retro',
     blurb: 'Vintage hardware: cream, olive, oxblood and amber CRT. Warm chassis, muted accents.' },
   { id: 'light', name: 'Light',
-    blurb: 'Daylight-legible themes for bright rooms — the corner of this market almost nobody serves.' },
+    blurb: 'Daylight-legible themes for bright rooms: the corner of this market almost nobody serves.' },
   { id: 'cyberpunk', name: 'Cyberpunk',
     blurb: 'Deep indigo and near-black under neon spring green, scarlet and electric blue. High chroma, still contrast-checked.' }
 ];
@@ -168,8 +168,7 @@ var THEMES = [
   /* ── Cyberpunk ────────────────────────────────────────────────────────────
      Built around the genre's usual coordinates in OKLCH: a deep indigo-violet
      chassis near H287, spring green near H157 at high chroma, scarlet near H15,
-     electric blue near H269, lavender near H311. Tuned for Ableton's surfaces —
-     clip grids, meters and device panels — rather than syntax tokens. */
+     electric blue near H269, lavender near H311. Tuned for Ableton's surfaces (clip grids, meters and device panels) rather than syntax tokens. */
   spec({ id:'neon-circuit', name:'Neon Circuit', family:'cyberpunk', bgHue:287, bgChroma:0.105, contrast:0.30, depth:-0.15,
          accent:{h:157,c:0.215}, accent2:{h:311,c:0.140}, chroma:1.25,
          clips:{origin:140,spread:215,chroma:0.195,lightness:0.73} }),

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ableton Live 12 Theme Editor — PixeLabs</title>
+<title>Ableton Live 12 Theme Editor by PixeLabs</title>
 <meta name="description" content="Free browser-based theme editor for Ableton Live 12. Design a theme, check its contrast, export a .ask file. Works offline.">
 <style>
 :root {
@@ -112,7 +112,7 @@ textarea.fallback {
 @media (prefers-reduced-motion: reduce) { .toast { transition: none; } * { animation: none !important; } }
 
 /* ── Ableton mock ──────────────────────────────────────────────────────────
-   Not pixel-exact — enough structure to judge a palette without restarting
+   Not pixel-exact, but enough structure to judge a palette without restarting
    Live: browser, session grid, mixer with meters, transport, device chain. */
 .mock {
   border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
@@ -637,11 +637,11 @@ var ROLE_L = {"accent.hover": {"d": 0.6623,"l": 0.6623,"t": "colour"},"accent.li
    here: it comes from ROLE_L, which carries the positional structure each mode
    needs. These h/c values are ours, chosen for the meaning of each role.
 
-   Neutral roles (chassis, text, scrollbars, grids) aren't listed — they take
+   Neutral roles (chassis, text, scrollbars, grids) aren't listed. They take
    the theme's own background hue at low chroma.                             */
 
 var PALETTE = {
-  /* Accents — overridden per theme via ACCENT_SLOTS, these are the fallbacks. */
+  /* Accents, overridden per theme via ACCENT_SLOTS, these are the fallbacks. */
   'accent.primary':        { h:  65, c: 0.140 },
   'accent.secondary':      { h: 207, c: 0.128 },
   'accent.hover':          { h: 264, c: 0.150 },
@@ -650,7 +650,7 @@ var PALETTE = {
   'accent.searchStandby':  { h:  88, c: 0.085 },
   'display.handle2':       { h:  10, c: 0.130 },
 
-  /* Selection — a tinted wash behind selected material. */
+  /* Selection: a tinted wash behind selected material. */
   'sel.background':         { h: 220, c: 0.055 },
   'sel.backgroundContrast': { h: 220, c: 0.045 },
   'sel.standby':            { h: 220, c: 0.040 },
@@ -681,13 +681,12 @@ var PALETTE = {
   'sem.selectorZone':     { h: 258, c: 0.070 },
   'sem.selectorZoneRamp': { h: 264, c: 0.170 },
 
-  /* MIDI/key/macro mapping modes. Deliberately loud and mutually distinct —
-     these only appear while mapping, and being unmissable is the point. */
+  /* MIDI/key/macro mapping modes. Deliberately loud and mutually distinct: these only appear while mapping, and being unmissable is the point. */
   'learn.midi':  { h: 275, c: 0.260 },
   'learn.key':   { h:  45, c: 0.200 },
   'learn.macro': { h: 145, c: 0.230 },
 
-  /* Operator's four oscillators — must stay distinguishable from each other. */
+  /* Operator's four oscillators, which must stay distinguishable from each other. */
   'op.1': { h: 100, c: 0.160 },
   'op.2': { h: 185, c: 0.140 },
   'op.3': { h: 275, c: 0.170 },
@@ -752,9 +751,7 @@ var ACCENT_SLOTS = {
 
 /* ── Numeric + boolean entries ─────────────────────────────────────────────
    Blend factors, alphas and the lightness/saturation scalars Live applies to
-   generated colours. These genuinely differ between light and dark themes —
-   using dark values in a light theme makes clips and lane headers look wrong —
-   so each mode gets its own set and we interpolate on the way out.           */
+   generated colours. These genuinely differ between light and dark themes. Using dark values in a light theme makes clips and lane headers look wrong, so each mode gets its own set and we interpolate on the way out.           */
 
 var NUMERIC = {
   dark: {
@@ -890,7 +887,7 @@ function contrastRatio(a, b) {
 
 /* ── Contrast audit ────────────────────────────────────────────────────────
    Which role is "the background" is mode-dependent. In Live's own light themes
-   SurfaceArea is a mid-grey frame (#696e7a), not the page behind text — the
+   SurfaceArea is a mid-grey frame (#696e7a), not the page behind text. The
    dominant light background is DetailViewBackground. Measuring light themes
    against bg.surface therefore reports nonsense, so each mode gets its own
    pairs. */
@@ -989,7 +986,7 @@ function resolveRoles(spec) {
   return out;
 }
 
-/* Clip1–16. Live keeps these identical across all 18 of its built-in themes,
+/* Clip1 to Clip16. Live keeps these identical across all 18 of its built-in themes,
    so recolouring them is instantly visible and rare in third-party packs. */
 function applyClipPalette(spec, out) {
   var cp = spec.clips;
@@ -1094,7 +1091,7 @@ function parseAsk(text) {
 
 /* ── Forensic watermark ────────────────────────────────────────────────────
    Traces a leaked file back to a download. It does NOT prevent copying and is
-   not DRM — a .ask must stay readable for Live to load it. Two carriers: an
+   not DRM, because a .ask must stay readable for Live to load it. Two carriers: an
    XML comment (trivially removed) and ±1 LSB nudges on visually inert colours
    (survives a careless copy-paste). */
 
@@ -1365,7 +1362,7 @@ function makeZip(files) {
 /* ── src/presets.js ── */
 /* ── Theme families ────────────────────────────────────────────────────────
    Each entry is a palette spec. bgHue/bgChroma tint the neutral chassis;
-   accent/accent2 drive the highlight colours; clips recolours Clip1–16, which
+   accent/accent2 drive the highlight colours; clips recolours Clip1 to Clip16, which
    Live leaves identical in all 18 of its own themes.                        */
 
 // Prepended to every exported filename and theme name so all PixeLabs themes
@@ -1390,13 +1387,13 @@ function spec(o) {
 
 var FAMILIES = [
   { id: 'dark-pro', name: 'Dark Pro',
-    blurb: 'Low-fatigue studio darks. Restrained chroma, wide tonal separation — built for long sessions.' },
+    blurb: 'Low-fatigue studio darks. Restrained chroma, wide tonal separation, built for long sessions.' },
   { id: 'neon', name: 'Neon',
     blurb: 'High-chroma accents on deep chassis. Psytrance and synthwave palettes that still pass contrast.' },
   { id: 'retro', name: 'Retro',
     blurb: 'Vintage hardware: cream, olive, oxblood and amber CRT. Warm chassis, muted accents.' },
   { id: 'light', name: 'Light',
-    blurb: 'Daylight-legible themes for bright rooms — the corner of this market almost nobody serves.' },
+    blurb: 'Daylight-legible themes for bright rooms: the corner of this market almost nobody serves.' },
   { id: 'cyberpunk', name: 'Cyberpunk',
     blurb: 'Deep indigo and near-black under neon spring green, scarlet and electric blue. High chroma, still contrast-checked.' }
 ];
@@ -1533,8 +1530,7 @@ var THEMES = [
   /* ── Cyberpunk ────────────────────────────────────────────────────────────
      Built around the genre's usual coordinates in OKLCH: a deep indigo-violet
      chassis near H287, spring green near H157 at high chroma, scarlet near H15,
-     electric blue near H269, lavender near H311. Tuned for Ableton's surfaces —
-     clip grids, meters and device panels — rather than syntax tokens. */
+     electric blue near H269, lavender near H311. Tuned for Ableton's surfaces (clip grids, meters and device panels) rather than syntax tokens. */
   spec({ id:'neon-circuit', name:'Neon Circuit', family:'cyberpunk', bgHue:287, bgChroma:0.105, contrast:0.30, depth:-0.15,
          accent:{h:157,c:0.215}, accent2:{h:311,c:0.140}, chroma:1.25,
          clips:{origin:140,spread:215,chroma:0.195,lightness:0.73} }),
@@ -1570,7 +1566,7 @@ function hexOf(r) { return r ? oklchToHex(r.L, r.C, r.H, '') : '#000000'; }
 
 /* Every mock element names the Ableton tag it stands for, so it recolours
    correctly in both modes without a per-mode lookup table. Live's light themes
-   are mid-grey chrome with a light detail pane — not a white UI — and mapping
+   are mid-grey chrome with a light detail pane, not a white UI, and mapping
    by tag reproduces that instead of guessing at it. */
 var MOCK_TAGS = {
   desktop: 'Desktop', surface: 'SurfaceArea', raised: 'SurfaceBackground',
@@ -1797,7 +1793,7 @@ function download(blob, filename) {
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
     toast('Saved ' + filename);
   } catch (e) {
-    toast('Download blocked — use "Copy XML" below');
+    toast('Download blocked, use "Copy XML" below');
   }
 }
 

@@ -3,11 +3,11 @@
    here: it comes from ROLE_L, which carries the positional structure each mode
    needs. These h/c values are ours, chosen for the meaning of each role.
 
-   Neutral roles (chassis, text, scrollbars, grids) aren't listed — they take
+   Neutral roles (chassis, text, scrollbars, grids) aren't listed. They take
    the theme's own background hue at low chroma.                             */
 
 var PALETTE = {
-  /* Accents — overridden per theme via ACCENT_SLOTS, these are the fallbacks. */
+  /* Accents, overridden per theme via ACCENT_SLOTS, these are the fallbacks. */
   'accent.primary':        { h:  65, c: 0.140 },
   'accent.secondary':      { h: 207, c: 0.128 },
   'accent.hover':          { h: 264, c: 0.150 },
@@ -16,7 +16,7 @@ var PALETTE = {
   'accent.searchStandby':  { h:  88, c: 0.085 },
   'display.handle2':       { h:  10, c: 0.130 },
 
-  /* Selection — a tinted wash behind selected material. */
+  /* Selection: a tinted wash behind selected material. */
   'sel.background':         { h: 220, c: 0.055 },
   'sel.backgroundContrast': { h: 220, c: 0.045 },
   'sel.standby':            { h: 220, c: 0.040 },
@@ -47,13 +47,12 @@ var PALETTE = {
   'sem.selectorZone':     { h: 258, c: 0.070 },
   'sem.selectorZoneRamp': { h: 264, c: 0.170 },
 
-  /* MIDI/key/macro mapping modes. Deliberately loud and mutually distinct —
-     these only appear while mapping, and being unmissable is the point. */
+  /* MIDI/key/macro mapping modes. Deliberately loud and mutually distinct: these only appear while mapping, and being unmissable is the point. */
   'learn.midi':  { h: 275, c: 0.260 },
   'learn.key':   { h:  45, c: 0.200 },
   'learn.macro': { h: 145, c: 0.230 },
 
-  /* Operator's four oscillators — must stay distinguishable from each other. */
+  /* Operator's four oscillators, which must stay distinguishable from each other. */
   'op.1': { h: 100, c: 0.160 },
   'op.2': { h: 185, c: 0.140 },
   'op.3': { h: 275, c: 0.170 },
@@ -118,9 +117,7 @@ var ACCENT_SLOTS = {
 
 /* ── Numeric + boolean entries ─────────────────────────────────────────────
    Blend factors, alphas and the lightness/saturation scalars Live applies to
-   generated colours. These genuinely differ between light and dark themes —
-   using dark values in a light theme makes clips and lane headers look wrong —
-   so each mode gets its own set and we interpolate on the way out.           */
+   generated colours. These genuinely differ between light and dark themes. Using dark values in a light theme makes clips and lane headers look wrong, so each mode gets its own set and we interpolate on the way out.           */
 
 var NUMERIC = {
   dark: {

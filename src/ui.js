@@ -14,7 +14,7 @@ function hexOf(r) { return r ? oklchToHex(r.L, r.C, r.H, '') : '#000000'; }
 
 /* Every mock element names the Ableton tag it stands for, so it recolours
    correctly in both modes without a per-mode lookup table. Live's light themes
-   are mid-grey chrome with a light detail pane — not a white UI — and mapping
+   are mid-grey chrome with a light detail pane, not a white UI, and mapping
    by tag reproduces that instead of guessing at it. */
 var MOCK_TAGS = {
   desktop: 'Desktop', surface: 'SurfaceArea', raised: 'SurfaceBackground',
@@ -241,7 +241,7 @@ function download(blob, filename) {
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
     toast('Saved ' + filename);
   } catch (e) {
-    toast('Download blocked — use "Copy XML" below');
+    toast('Download blocked, use "Copy XML" below');
   }
 }
 

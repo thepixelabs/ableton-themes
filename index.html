@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free Ableton Live Themes — PixeLabs</title>
+<title>Free Ableton Live Themes by PixeLabs</title>
 <meta name="description" content="Free browser-based theme editor and 45 ready-made themes for Ableton Live 12. OKLCH colour, WCAG-checked contrast, custom clip palettes. No cost, no catch.">
 
 <!-- Open Graph / social preview. TODO: create and host a real 1200x630 og:image once
      screenshots exist -- a data: URI is impractical at that size, so this needs an
      actual asset file added to the repo before it will render a preview image. -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Free Ableton Live Themes — PixeLabs">
+<meta property="og:title" content="Free Ableton Live Themes by PixeLabs">
 <meta property="og:description" content="Free browser-based theme editor and 45 ready-made themes for Ableton Live 12. OKLCH colour, WCAG-checked contrast, custom clip palettes. No cost, no catch.">
 <!-- TODO: confirm this is the final Pages URL (custom domain vs. github.io default) -->
 <meta property="og:url" content="https://thepixelabs.github.io/ableton-themes/">
@@ -659,7 +659,7 @@ h3{ font-size:var(--text-lg); }
 .faq-item summary::after{
   content:"+"; color:var(--accent-cyan); font-weight:700; flex:none;
 }
-.faq-item[open] summary::after{ content:"–"; }
+.faq-item[open] summary::after{ content:"\00d7"; }
 .faq-item p{ color:var(--text-1); padding-bottom:var(--space-4); font-size:var(--text-sm); }
 
 /* ===================================================================
@@ -716,8 +716,9 @@ h3{ font-size:var(--text-lg); }
     <div class="wrap hero-inner">
       <div class="hero-copy">
         <span class="eyebrow">Free · Ableton Live 12</span>
-        <h1>45 free Ableton Live themes — or design your own.</h1>
-        <p class="lede">A browser-based editor for Ableton Live 12 — design against a
+        <h1>45 free Ableton Live themes, or design your own.</h1>
+        <p class="lede">A browser-based editor for Ableton Live 12.
+          Design against a
           live UI mock-up, check contrast in OKLCH, export a ready <code>.ask</code>
           file. Or skip the editor: the pack has 45 themes across five families,
           already WCAG-checked.</p>
@@ -726,7 +727,7 @@ h3{ font-size:var(--text-lg); }
           <a class="btn btn-secondary" href="#pack">Browse the pack</a>
         </div>
         <div class="trust-badges">
-          <span class="badge">276 styleable entries — all of them</span>
+          <span class="badge">All 276 styleable entries</span>
           <span class="badge">OKLCH colour space, not RGB</span>
           <span class="badge">WCAG AA checked, every theme</span>
         </div>
@@ -735,7 +736,7 @@ h3{ font-size:var(--text-lg); }
       <div class="hero-visual">
         <div class="preview-panel">
           <div class="preview-head">
-            <span class="preview-label">Live preview — pick a family</span>
+            <span class="preview-label">Live preview, pick a family</span>
             <!-- role="tablist"/"tab"/"tabpanel" and aria-selected/-controls/-labelledby
                  are added by JS below, once scripting is confirmed running (see the
                  .js class swap in <head>). Without JS these are plain buttons and the
@@ -756,7 +757,7 @@ h3{ font-size:var(--text-lg); }
           <div class="family-panels">
 
             <div class="family-panel is-active" id="panel-dark-pro" data-family="dark-pro">
-              <p class="family-blurb"><strong>Dark Pro</strong> — low-fatigue studio darks, built for the sessions that run past midnight.</p>
+              <p class="family-blurb"><strong>Dark Pro</strong>: low-fatigue studio darks, built for the sessions that run past midnight.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="dark-pro" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Dark Pro theme family">
                   <div class="dawbar">
@@ -823,7 +824,7 @@ h3{ font-size:var(--text-lg); }
             </div>
 
             <div class="family-panel" id="panel-neon" data-family="neon" hidden>
-              <p class="family-blurb"><strong>Neon</strong> — high-chroma accents on near-black, psytrance and synthwave dialed to full saturation.</p>
+              <p class="family-blurb"><strong>Neon</strong>: high-chroma accents on near-black, psytrance and synthwave dialed to full saturation.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="neon" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Neon theme family">
                   <div class="dawbar">
@@ -890,7 +891,7 @@ h3{ font-size:var(--text-lg); }
             </div>
 
             <div class="family-panel" id="panel-retro" data-family="retro" hidden>
-              <p class="family-blurb"><strong>Retro</strong> — cream, olive, oxblood: the colour language of vintage hardware.</p>
+              <p class="family-blurb"><strong>Retro</strong>: cream, olive, oxblood: the colour language of vintage hardware.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="retro" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Retro theme family">
                   <div class="dawbar">
@@ -957,7 +958,7 @@ h3{ font-size:var(--text-lg); }
             </div>
 
             <div class="family-panel" id="panel-light" data-family="light" hidden>
-              <p class="family-blurb"><strong>Light</strong> — daylight-legible and genuinely rare: almost nobody makes a good light Ableton theme.</p>
+              <p class="family-blurb"><strong>Light</strong>: daylight-legible and genuinely rare: almost nobody makes a good light Ableton theme.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="light" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Light theme family">
                   <div class="dawbar">
@@ -1024,7 +1025,7 @@ h3{ font-size:var(--text-lg); }
             </div>
 
             <div class="family-panel" id="panel-cyberpunk" data-family="cyberpunk" hidden>
-              <p class="family-blurb"><strong>Cyberpunk</strong> — deep indigo and near-black under neon spring green, scarlet and electric blue.</p>
+              <p class="family-blurb"><strong>Cyberpunk</strong>: deep indigo and near-black under neon spring green, scarlet and electric blue.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="cyberpunk" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Cyberpunk theme family">
                   <div class="dawbar">
@@ -1127,14 +1128,14 @@ h3{ font-size:var(--text-lg); }
       </div>
 
       <div class="contrast-demo" aria-hidden="true">
-        <p class="contrast-demo-cap">Example output — the real checker runs live, in the editor, as you edit.</p>
+        <p class="contrast-demo-cap">Example output. The real checker runs live in the editor as you edit.</p>
         <div class="contrast-row">
           <span class="contrast-swatch" style="background:#16161d;color:#f1f0f5">Aa</span>
-          <span class="contrast-meta">text.primary on bg.surface — <strong>14.6:1</strong><span class="badge-pass">AAA</span></span>
+          <span class="contrast-meta">text.primary on bg.surface: <strong>14.6:1</strong><span class="badge-pass">AAA</span></span>
         </div>
         <div class="contrast-row">
           <span class="contrast-swatch" style="background:#8a5cff;color:#08080b">Aa</span>
-          <span class="contrast-meta">accent.primary on bg.deepest — <strong>4.8:1</strong><span class="badge-pass">AA</span></span>
+          <span class="contrast-meta">accent.primary on bg.deepest: <strong>4.8:1</strong><span class="badge-pass">AA</span></span>
         </div>
       </div>
     </div>
@@ -1146,13 +1147,13 @@ h3{ font-size:var(--text-lg); }
       <div class="section-head">
         <span class="eyebrow">Credibility, not hype</span>
         <h2 id="why-h">Why it's different</h2>
-        <p>None of this is hype — it's what happens when you theme all 276
+        <p>None of this is hype. It is what happens when you theme all 276
            entries instead of the dozen anyone can see in a screenshot.</p>
       </div>
       <div class="reasons">
         <div class="reason">
           <h3>All 276 entries</h3>
-          <p>236 colours and 40 numeric tuning values, every one styleable — not
+          <p>236 colours and 40 numeric tuning values, every one styleable, not
              just the parts that show up in a screenshot.</p>
         </div>
         <div class="reason">
@@ -1168,7 +1169,7 @@ h3{ font-size:var(--text-lg); }
         </div>
         <div class="reason">
           <h3>Real clip colours</h3>
-          <p>Ableton's 18 built-in themes all share the same Clip1–16 palette;
+          <p>Ableton's 18 built-in themes all share the same Clip1 to Clip16 palette;
              only the chassis changes. This pack recolours the clips too, and
              you'll see it the moment you open Session View.</p>
         </div>
@@ -1182,7 +1183,7 @@ h3{ font-size:var(--text-lg); }
       <div class="section-head">
         <span class="eyebrow">45 themes, five families</span>
         <h2 id="pack-h">The pack</h2>
-        <p>Forty .ask themes across Dark Pro, Neon, Retro, and Light — free, no
+        <p>Forty five .ask themes across Dark Pro, Neon, Retro, Light and Cyberpunk. Free, no
            strings attached. Every one is contrast-checked and ships with its own
            clip and track palette instead of a recoloured default.</p>
       </div>
@@ -1272,7 +1273,7 @@ h3{ font-size:var(--text-lg); }
           <span class="step-num">2</span>
           <div>
             <h3>Drop it in your Themes folder</h3>
-            <p>On macOS it lives inside the Ableton app itself — see below.</p>
+            <p>On macOS it lives inside the Ableton app itself. See below.</p>
           </div>
         </div>
         <div class="install-step">
@@ -1327,12 +1328,12 @@ h3{ font-size:var(--text-lg); }
         <details class="faq-item">
           <summary>Is this affiliated with Ableton?</summary>
           <p>No. PixeLabs is not affiliated with, sponsored by, or
-             endorsed by Ableton — it's themes for Ableton Live, made
+             endorsed by Ableton. These are themes for Ableton Live, made
              independently.</p>
         </details>
         <details class="faq-item">
           <summary>Does it cost anything?</summary>
-          <p>No. The editor and all 45 themes are free, full stop — no email
+          <p>No. The editor and all 45 themes are free, full stop. No email
              wall, no trial timer, no upsell buried in the install. It's here to
              put PixeLabs in front of producers; that's the whole business model.</p>
         </details>
@@ -1344,7 +1345,7 @@ h3{ font-size:var(--text-lg); }
         <details class="faq-item">
           <summary>Does installing a theme modify Ableton itself?</summary>
           <p>No. A <code>.ask</code> file is plain XML that you drop into
-             Ableton's own Themes folder — Live reads it like any other theme.
+             Ableton's own Themes folder. Live reads it like any other theme.
              Nothing is patched or auto-installed; delete the file and the theme
              is gone.</p>
         </details>
@@ -1379,10 +1380,10 @@ h3{ font-size:var(--text-lg); }
           </ul>
         </div>
         <div>
-          <h4>Elsewhere</h4>
+          <h4>Links</h4>
           <ul>
             <li><a href="https://github.com/thepixelabs/ableton-themes">GitHub repo</a></li>
-            <li><a href="https://pixelabs.net">PixeLabs plugins</a></li>
+            <li><a href="https://pixelabs.net">PixeLabs</a></li>
           </ul>
         </div>
       </div>
@@ -1511,11 +1512,11 @@ h3{ font-size:var(--text-lg); }
           setState('success', 'Copied');
         }).catch(function(){
           var ok = legacyCopy(text, target);
-          setState(ok ? 'success' : 'error', ok ? 'Copied' : 'Copy failed — select the path and copy manually');
+          setState(ok ? 'success' : 'error', ok ? 'Copied' : 'Copy failed, select the path and copy manually');
         });
       } else {
         var ok = legacyCopy(text, target);
-        setState(ok ? 'success' : 'error', ok ? 'Copied' : 'Copy failed — select the path and copy manually');
+        setState(ok ? 'success' : 'error', ok ? 'Copied' : 'Copy failed, select the path and copy manually');
       }
     });
   });

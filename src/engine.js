@@ -73,7 +73,7 @@ function contrastRatio(a, b) {
 
 /* ── Contrast audit ────────────────────────────────────────────────────────
    Which role is "the background" is mode-dependent. In Live's own light themes
-   SurfaceArea is a mid-grey frame (#696e7a), not the page behind text — the
+   SurfaceArea is a mid-grey frame (#696e7a), not the page behind text. The
    dominant light background is DetailViewBackground. Measuring light themes
    against bg.surface therefore reports nonsense, so each mode gets its own
    pairs. */
@@ -172,7 +172,7 @@ function resolveRoles(spec) {
   return out;
 }
 
-/* Clip1–16. Live keeps these identical across all 18 of its built-in themes,
+/* Clip1 to Clip16. Live keeps these identical across all 18 of its built-in themes,
    so recolouring them is instantly visible and rare in third-party packs. */
 function applyClipPalette(spec, out) {
   var cp = spec.clips;
@@ -277,7 +277,7 @@ function parseAsk(text) {
 
 /* ── Forensic watermark ────────────────────────────────────────────────────
    Traces a leaked file back to a download. It does NOT prevent copying and is
-   not DRM — a .ask must stay readable for Live to load it. Two carriers: an
+   not DRM, because a .ask must stay readable for Live to load it. Two carriers: an
    XML comment (trivially removed) and ±1 LSB nudges on visually inert colours
    (survives a careless copy-paste). */
 

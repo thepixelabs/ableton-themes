@@ -8,7 +8,7 @@ const THEMES_DIR = process.argv[2] ||
   '/Applications/Ableton Live 12 Suite.app/Contents/App-Resources/Themes';
 let fail = 0;
 const ok = (name, cond, detail) => {
-  console.log((cond ? '  PASS  ' : '  FAIL  ') + name + (detail ? '  — ' + detail : ''));
+  console.log((cond ? '  PASS  ' : '  FAIL  ') + name + (detail ? ': ' + detail : ''));
   if (!cond) fail++;
 };
 
@@ -28,7 +28,7 @@ function structure(xml) {
 let reference = null;
 try {
   reference = structure(fs.readFileSync(path.join(THEMES_DIR, 'Default Dark Cool Medium.ask'), 'utf8'));
-} catch (e) { console.log('  SKIP  structural check — Ableton not found at ' + THEMES_DIR); }
+} catch (e) { console.log('  SKIP  structural check, Ableton not found at ' + THEMES_DIR); }
 
 console.log('Schema');
 ok('276 entries in SCHEMA', SCHEMA.length === 276, SCHEMA.length + ' entries');
