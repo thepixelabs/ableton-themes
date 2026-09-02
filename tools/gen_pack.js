@@ -14,11 +14,22 @@ for (const fam of new Set(THEMES.map(t => t.family))) {
   }
 }
 
-let n = 0, fails = [];
+// Audit before writing anything. The failure exit used to sit after the async
+// zip write was already in flight, so a contrast failure could terminate the
+// process mid write and leave a truncated zip on disk.
+const fails = [];
 for (const t of THEMES) {
-  const audit = auditContrast(resolveRoles(t));
-  const bad = audit.filter(r => !r.pass);
+  const bad = auditContrast(resolveRoles(t)).filter(r => !r.pass);
   if (bad.length) fails.push(t.id + ': ' + bad.map(r => `${r.label} ${r.ratio.toFixed(2)}<${r.min}`).join(', '));
+}
+if (fails.length) {
+  console.error('CONTRAST FAILURES, nothing written:\n  ' + fails.join('\n  '));
+  process.exit(1);
+}
+console.log('all themes pass the graded contrast checks');
+
+let n = 0;
+for (const t of THEMES) {
   const dir = path.join(root, 'pack', t.family);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, THEME_PREFIX + t.name + '.ask'),
@@ -48,6 +59,5 @@ const zipPath = path.join(root, 'pack', 'pixelabs-theme-pack.zip');
   const bytes = new Uint8Array(await makeZip(zipFiles).arrayBuffer());
   fs.writeFileSync(zipPath, bytes);
   console.log(`wrote ${n} themes to pack/ and pixelabs-theme-pack.zip (${(bytes.length/1024).toFixed(0)} KB)`);
-})();
-if (fails.length) { console.error('CONTRAST FAILURES:\n  ' + fails.join('\n  ')); process.exit(1); }
-console.log('all themes pass the graded contrast checks');
+})().catch(err => { console.error('zip write failed:', err); process.exit(1); });
+
