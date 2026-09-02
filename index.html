@@ -321,20 +321,18 @@ h3{ font-size:var(--text-lg); }
   display:grid; grid-template-columns:1fr; gap:var(--space-7);
   align-items:start;
 }
-@media (min-width: 1120px){
-  .hero-inner{ grid-template-columns:0.95fr 1.05fr; }
-}
-/* Once the 72rem shell is at full width, weight the visual column enough that
-   the mock's 560px fits outright. */
-@media (min-width: 1280px){
-  .hero-inner{ grid-template-columns:0.85fr 1.15fr; }
-}
+/* Stacked at every width: copy first, preview underneath. Side by side forced
+   the headline into a narrow column that ran long, and squeezed the mock below
+   the 560px it needs. Full width suits both. */
 /* Grid items default to a content-based automatic minimum width, which lets
    the mock-daw's min-width:560px (deep inside .hero-visual) blow out this
    column on narrow screens even though it's wrapped in an overflow-x:auto
    scroller. min-width:0 here is what actually lets that scroller do its job
    instead of the whole page gaining a horizontal scrollbar. */
 .hero-copy, .hero-visual{ min-width:0; }
+/* Without a grid column to hold it, the copy needs its own measure or the
+   headline stretches the full 72rem shell. */
+.hero-copy{ max-width:52rem; }
 .hero-copy h1{
   font-size:var(--text-4xl);
   margin-block:var(--space-3) var(--space-4);
@@ -343,7 +341,7 @@ h3{ font-size:var(--text-lg); }
 .hero-copy p.lede{
   font-size:var(--text-lg);
   color:var(--text-1);
-  max-width:34rem;
+  max-width:44rem;
   margin-bottom:var(--space-5);
 }
 .hero-cta{ display:flex; gap:var(--space-3); flex-wrap:wrap; margin-bottom:var(--space-6); }
