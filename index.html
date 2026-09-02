@@ -686,6 +686,37 @@ h3{ font-size:var(--text-lg); }
   color:var(--text-2); font-size:var(--text-xs); line-height:var(--leading-normal);
   max-width:52rem;
 }
+
+/* ===================================================================
+   HOW IT WORKS, two column
+   The preview widget moved here from the hero, where it forced the
+   headline into a narrow column. It sits on the right; the steps and the
+   contrast example run down a tighter column on the left.
+   =================================================================== */
+.how-grid{
+  display:grid; grid-template-columns:1fr;
+  gap:var(--space-6); align-items:start;
+}
+/* Below this the visual column cannot clear the mock's 560px minimum, so it
+   stacks rather than scrolling sideways. */
+@media (min-width:1120px){
+  .how-grid{ grid-template-columns:0.78fr 1.22fr; gap:var(--space-7); }
+}
+.how-copy, .how-visual{ min-width:0; }
+
+/* The left column is narrow now, so the steps stack instead of running
+   three across, and everything in it steps down a size. */
+.how-grid .steps{ grid-template-columns:1fr; gap:var(--space-4); }
+.how-grid .section-head{ margin-bottom:var(--space-5); }
+.how-grid .section-head p{ font-size:var(--text-base); }
+.how-grid .step{ padding:var(--space-4); }
+.how-grid .step h3{ font-size:var(--text-base); }
+.how-grid .step p{ font-size:var(--text-sm); }
+.how-grid .step-num{ font-size:var(--text-xs); }
+.how-grid .contrast-demo{
+  margin-top:var(--space-5); padding:var(--space-4); max-width:none;
+}
+.how-grid .contrast-swatch{ width:2rem; height:2rem; }
 </style>
 <style>
 /* The editor needs a pointer and roughly 1100px of width to be usable at all.
@@ -888,8 +919,54 @@ h3{ font-size:var(--text-lg); }
           <span class="badge">WCAG AA checked, every theme</span>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="hero-visual">
+  <!-- ============================= HOW IT WORKS ============================= -->
+  <section class="section" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="how-grid">
+      <div class="how-copy">
+      <div class="section-head">
+        <span class="eyebrow">The editor</span>
+        <h2 id="how-h">How the editor works</h2>
+        <p>Three steps, entirely in the browser.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <h3>Design live</h3>
+          <p>Pick colours against a working mock-up of Ableton's interface, not a
+             swatch grid.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <h3>Check contrast</h3>
+          <p>Contrast is checked in OKLCH as you edit, so hierarchy survives the
+             re-hue instead of breaking on export.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <h3>Export .ask</h3>
+          <p>Export a ready-to-install .ask file and drop it straight into
+             Ableton's Themes folder.</p>
+        </div>
+      </div>
+
+      <div class="contrast-demo" aria-hidden="true">
+        <p class="contrast-demo-cap">Example output. The real checker runs live in the editor as you edit.</p>
+        <div class="contrast-row">
+          <span class="contrast-swatch" style="background:#16161d;color:#f1f0f5">Aa</span>
+          <span class="contrast-meta">text.primary on bg.surface: <strong>14.6:1</strong><span class="badge-pass">AAA</span></span>
+        </div>
+        <div class="contrast-row">
+          <span class="contrast-swatch" style="background:#8a5cff;color:#08080b">Aa</span>
+          <span class="contrast-meta">accent.primary on bg.deepest: <strong>4.8:1</strong><span class="badge-pass">AA</span></span>
+        </div>
+      </div>
+      </div>
+      <div class="how-visual">
+
         <div class="preview-panel">
           <div class="preview-head">
             <span class="preview-label">Live preview, pick a family</span>
@@ -1251,48 +1328,6 @@ h3{ font-size:var(--text-lg); }
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ============================= HOW IT WORKS ============================= -->
-  <section class="section" id="how" aria-labelledby="how-h">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">The editor</span>
-        <h2 id="how-h">How the editor works</h2>
-        <p>Three steps, entirely in the browser.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <span class="step-num">01</span>
-          <h3>Design live</h3>
-          <p>Pick colours against a working mock-up of Ableton's interface, not a
-             swatch grid.</p>
-        </div>
-        <div class="step">
-          <span class="step-num">02</span>
-          <h3>Check contrast</h3>
-          <p>Contrast is checked in OKLCH as you edit, so hierarchy survives the
-             re-hue instead of breaking on export.</p>
-        </div>
-        <div class="step">
-          <span class="step-num">03</span>
-          <h3>Export .ask</h3>
-          <p>Export a ready-to-install .ask file and drop it straight into
-             Ableton's Themes folder.</p>
-        </div>
-      </div>
-
-      <div class="contrast-demo" aria-hidden="true">
-        <p class="contrast-demo-cap">Example output. The real checker runs live in the editor as you edit.</p>
-        <div class="contrast-row">
-          <span class="contrast-swatch" style="background:#16161d;color:#f1f0f5">Aa</span>
-          <span class="contrast-meta">text.primary on bg.surface: <strong>14.6:1</strong><span class="badge-pass">AAA</span></span>
-        </div>
-        <div class="contrast-row">
-          <span class="contrast-swatch" style="background:#8a5cff;color:#08080b">Aa</span>
-          <span class="contrast-meta">accent.primary on bg.deepest: <strong>4.8:1</strong><span class="badge-pass">AA</span></span>
-        </div>
       </div>
     </div>
   </section>
