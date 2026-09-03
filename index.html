@@ -596,8 +596,16 @@ h3{ font-size:var(--text-lg); }
   transition:border-color 160ms ease, color 160ms ease;
 }
 .theme-list summary::-webkit-details-marker{ display:none; }
-.theme-list summary::after{ content:"+"; color:var(--f-text); font-weight:700; }
-.theme-list[open] summary::after{ content:"\00d7"; }
+/* A chevron reads as "this expands". A plus reads as "this adds something",
+   which is why nobody realised the list was there. */
+.theme-list summary::after{
+  content:""; width:0; height:0; flex:none;
+  border-left:5px solid var(--f-text);
+  border-top:4px solid transparent; border-bottom:4px solid transparent;
+  transition:transform 160ms ease;
+}
+.theme-list[open] summary::after{ transform:rotate(90deg); }
+
 .theme-list summary:hover{ color:var(--f-accent); border-color:var(--f-accent); }
 .theme-list ul{
   list-style:none; margin:var(--space-3) 0 0; padding:0;
@@ -1427,18 +1435,18 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>Download one</summary>
+              <summary>Browse all 10 themes</summary>
               <ul>
-                <li><a href="pack/dark-pro/PXL%20Graphite.ask" download>Graphite</a></li>
-                <li><a href="pack/dark-pro/PXL%20Slate.ask" download>Slate</a></li>
-                <li><a href="pack/dark-pro/PXL%20Obsidian.ask" download>Obsidian</a></li>
-                <li><a href="pack/dark-pro/PXL%20Ink.ask" download>Ink</a></li>
-                <li><a href="pack/dark-pro/PXL%20Basalt.ask" download>Basalt</a></li>
-                <li><a href="pack/dark-pro/PXL%20Umber.ask" download>Umber</a></li>
-                <li><a href="pack/dark-pro/PXL%20Moss.ask" download>Moss</a></li>
-                <li><a href="pack/dark-pro/PXL%20Petrol.ask" download>Petrol</a></li>
-                <li><a href="pack/dark-pro/PXL%20Carbon.ask" download>Carbon</a></li>
-                <li><a href="pack/dark-pro/PXL%20Nightshift.ask" download>Nightshift</a></li>
+                <li><a href="pack/dark-pro/PXL%20Graphite.ask" download="PXL Graphite.ask">Graphite</a></li>
+                <li><a href="pack/dark-pro/PXL%20Slate.ask" download="PXL Slate.ask">Slate</a></li>
+                <li><a href="pack/dark-pro/PXL%20Obsidian.ask" download="PXL Obsidian.ask">Obsidian</a></li>
+                <li><a href="pack/dark-pro/PXL%20Ink.ask" download="PXL Ink.ask">Ink</a></li>
+                <li><a href="pack/dark-pro/PXL%20Basalt.ask" download="PXL Basalt.ask">Basalt</a></li>
+                <li><a href="pack/dark-pro/PXL%20Umber.ask" download="PXL Umber.ask">Umber</a></li>
+                <li><a href="pack/dark-pro/PXL%20Moss.ask" download="PXL Moss.ask">Moss</a></li>
+                <li><a href="pack/dark-pro/PXL%20Petrol.ask" download="PXL Petrol.ask">Petrol</a></li>
+                <li><a href="pack/dark-pro/PXL%20Carbon.ask" download="PXL Carbon.ask">Carbon</a></li>
+                <li><a href="pack/dark-pro/PXL%20Nightshift.ask" download="PXL Nightshift.ask">Nightshift</a></li>
               </ul>
             </details>
         </article>
@@ -1451,18 +1459,18 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>Download one</summary>
+              <summary>Browse all 10 themes</summary>
               <ul>
-                <li><a href="pack/neon/PXL%20Goa.ask" download>Goa</a></li>
-                <li><a href="pack/neon/PXL%20Zenon.ask" download>Zenon</a></li>
-                <li><a href="pack/neon/PXL%20Ultraviolet.ask" download>Ultraviolet</a></li>
-                <li><a href="pack/neon/PXL%20Acid.ask" download>Acid</a></li>
-                <li><a href="pack/neon/PXL%20Vaporwave.ask" download>Vaporwave</a></li>
-                <li><a href="pack/neon/PXL%20Plasma.ask" download>Plasma</a></li>
-                <li><a href="pack/neon/PXL%20Nitrous.ask" download>Nitrous</a></li>
-                <li><a href="pack/neon/PXL%20Darkpsy.ask" download>Darkpsy</a></li>
-                <li><a href="pack/neon/PXL%20Spectra.ask" download>Spectra</a></li>
-                <li><a href="pack/neon/PXL%20Hypnotic.ask" download>Hypnotic</a></li>
+                <li><a href="pack/neon/PXL%20Goa.ask" download="PXL Goa.ask">Goa</a></li>
+                <li><a href="pack/neon/PXL%20Zenon.ask" download="PXL Zenon.ask">Zenon</a></li>
+                <li><a href="pack/neon/PXL%20Ultraviolet.ask" download="PXL Ultraviolet.ask">Ultraviolet</a></li>
+                <li><a href="pack/neon/PXL%20Acid.ask" download="PXL Acid.ask">Acid</a></li>
+                <li><a href="pack/neon/PXL%20Vaporwave.ask" download="PXL Vaporwave.ask">Vaporwave</a></li>
+                <li><a href="pack/neon/PXL%20Plasma.ask" download="PXL Plasma.ask">Plasma</a></li>
+                <li><a href="pack/neon/PXL%20Nitrous.ask" download="PXL Nitrous.ask">Nitrous</a></li>
+                <li><a href="pack/neon/PXL%20Darkpsy.ask" download="PXL Darkpsy.ask">Darkpsy</a></li>
+                <li><a href="pack/neon/PXL%20Spectra.ask" download="PXL Spectra.ask">Spectra</a></li>
+                <li><a href="pack/neon/PXL%20Hypnotic.ask" download="PXL Hypnotic.ask">Hypnotic</a></li>
               </ul>
             </details>
         </article>
@@ -1475,18 +1483,18 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>Download one</summary>
+              <summary>Browse all 10 themes</summary>
               <ul>
-                <li><a href="pack/retro/PXL%20Oxblood.ask" download>Oxblood</a></li>
-                <li><a href="pack/retro/PXL%20Olive%20Drab.ask" download>Olive Drab</a></li>
-                <li><a href="pack/retro/PXL%20Amber%20CRT.ask" download>Amber CRT</a></li>
-                <li><a href="pack/retro/PXL%20Teak.ask" download>Teak</a></li>
-                <li><a href="pack/retro/PXL%20Rackmount.ask" download>Rackmount</a></li>
-                <li><a href="pack/retro/PXL%20Bakelite.ask" download>Bakelite</a></li>
-                <li><a href="pack/retro/PXL%20Sea%20Foam.ask" download>Sea Foam</a></li>
-                <li><a href="pack/retro/PXL%20Tape.ask" download>Tape</a></li>
-                <li><a href="pack/retro/PXL%20Blueprint.ask" download>Blueprint</a></li>
-                <li><a href="pack/retro/PXL%20Valve.ask" download>Valve</a></li>
+                <li><a href="pack/retro/PXL%20Oxblood.ask" download="PXL Oxblood.ask">Oxblood</a></li>
+                <li><a href="pack/retro/PXL%20Olive%20Drab.ask" download="PXL Olive Drab.ask">Olive Drab</a></li>
+                <li><a href="pack/retro/PXL%20Amber%20CRT.ask" download="PXL Amber CRT.ask">Amber CRT</a></li>
+                <li><a href="pack/retro/PXL%20Teak.ask" download="PXL Teak.ask">Teak</a></li>
+                <li><a href="pack/retro/PXL%20Rackmount.ask" download="PXL Rackmount.ask">Rackmount</a></li>
+                <li><a href="pack/retro/PXL%20Bakelite.ask" download="PXL Bakelite.ask">Bakelite</a></li>
+                <li><a href="pack/retro/PXL%20Sea%20Foam.ask" download="PXL Sea Foam.ask">Sea Foam</a></li>
+                <li><a href="pack/retro/PXL%20Tape.ask" download="PXL Tape.ask">Tape</a></li>
+                <li><a href="pack/retro/PXL%20Blueprint.ask" download="PXL Blueprint.ask">Blueprint</a></li>
+                <li><a href="pack/retro/PXL%20Valve.ask" download="PXL Valve.ask">Valve</a></li>
               </ul>
             </details>
         </article>
@@ -1499,18 +1507,18 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>Download one</summary>
+              <summary>Browse all 10 themes</summary>
               <ul>
-                <li><a href="pack/light/PXL%20Daylight.ask" download>Daylight</a></li>
-                <li><a href="pack/light/PXL%20Paper.ask" download>Paper</a></li>
-                <li><a href="pack/light/PXL%20Linen.ask" download>Linen</a></li>
-                <li><a href="pack/light/PXL%20Overcast.ask" download>Overcast</a></li>
-                <li><a href="pack/light/PXL%20Sandstone.ask" download>Sandstone</a></li>
-                <li><a href="pack/light/PXL%20Mint.ask" download>Mint</a></li>
-                <li><a href="pack/light/PXL%20Porcelain.ask" download>Porcelain</a></li>
-                <li><a href="pack/light/PXL%20Chalk.ask" download>Chalk</a></li>
-                <li><a href="pack/light/PXL%20Sky.ask" download>Sky</a></li>
-                <li><a href="pack/light/PXL%20Fog.ask" download>Fog</a></li>
+                <li><a href="pack/light/PXL%20Daylight.ask" download="PXL Daylight.ask">Daylight</a></li>
+                <li><a href="pack/light/PXL%20Paper.ask" download="PXL Paper.ask">Paper</a></li>
+                <li><a href="pack/light/PXL%20Linen.ask" download="PXL Linen.ask">Linen</a></li>
+                <li><a href="pack/light/PXL%20Overcast.ask" download="PXL Overcast.ask">Overcast</a></li>
+                <li><a href="pack/light/PXL%20Sandstone.ask" download="PXL Sandstone.ask">Sandstone</a></li>
+                <li><a href="pack/light/PXL%20Mint.ask" download="PXL Mint.ask">Mint</a></li>
+                <li><a href="pack/light/PXL%20Porcelain.ask" download="PXL Porcelain.ask">Porcelain</a></li>
+                <li><a href="pack/light/PXL%20Chalk.ask" download="PXL Chalk.ask">Chalk</a></li>
+                <li><a href="pack/light/PXL%20Sky.ask" download="PXL Sky.ask">Sky</a></li>
+                <li><a href="pack/light/PXL%20Fog.ask" download="PXL Fog.ask">Fog</a></li>
               </ul>
             </details>
         </article>
@@ -1523,13 +1531,13 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>Download one</summary>
+              <summary>Browse all 5 themes</summary>
               <ul>
-                <li><a href="pack/cyberpunk/PXL%20Neon%20Circuit.ask" download>Neon Circuit</a></li>
-                <li><a href="pack/cyberpunk/PXL%20Redline.ask" download>Redline</a></li>
-                <li><a href="pack/cyberpunk/PXL%20Nightwire.ask" download>Nightwire</a></li>
-                <li><a href="pack/cyberpunk/PXL%20Lavender%20Haze.ask" download>Lavender Haze</a></li>
-                <li><a href="pack/cyberpunk/PXL%20Chrome%20Alley.ask" download>Chrome Alley</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Neon%20Circuit.ask" download="PXL Neon Circuit.ask">Neon Circuit</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Redline.ask" download="PXL Redline.ask">Redline</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Nightwire.ask" download="PXL Nightwire.ask">Nightwire</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Lavender%20Haze.ask" download="PXL Lavender Haze.ask">Lavender Haze</a></li>
+                <li><a href="pack/cyberpunk/PXL%20Chrome%20Alley.ask" download="PXL Chrome Alley.ask">Chrome Alley</a></li>
               </ul>
             </details>
         </article>
@@ -1613,8 +1621,8 @@ h3{ font-size:var(--text-lg); }
           run while Live is open. Both are plain text, so read them first if you like.
         </p>
         <div class="hero-cta" style="margin-top:var(--space-3)">
-          <a class="btn btn-secondary" href="install-macos.command" download>macOS installer</a>
-          <a class="btn btn-secondary" href="install-windows.bat" download>Windows installer</a>
+          <a class="btn btn-secondary" href="install-macos.command" download="install-macos.command">macOS installer</a>
+          <a class="btn btn-secondary" href="install-windows.bat" download="install-windows.bat">Windows installer</a>
         </div>
         <p class="path-note" style="margin-top:var(--space-3)">
           On macOS, downloading the script directly strips its executable bit, so the copy
