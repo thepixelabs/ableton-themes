@@ -584,25 +584,34 @@ h3{ font-size:var(--text-lg); }
    dwarf the rest of the page, and most people want the zip. Open it and the
    family's themes are small pills that wrap, so ten fit in about three rows. */
 .theme-list{ margin-top:var(--space-3); }
+/* Looks like a control, not a caption. The first version used muted caption
+   styling and people read straight past it, which made the whole feature
+   invisible. */
 .theme-list summary{
-  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--text-2);
-  cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--f-text);
+  cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:8px;
+  padding:6px 12px; border:1px solid var(--f-line);
+  border-radius:var(--radius-pill); background:var(--f-bg-2);
+  white-space:nowrap;
+  transition:border-color 160ms ease, color 160ms ease;
 }
 .theme-list summary::-webkit-details-marker{ display:none; }
-.theme-list summary::after{ content:"+"; color:var(--accent-cyan); font-weight:700; }
+.theme-list summary::after{ content:"+"; color:var(--f-text); font-weight:700; }
 .theme-list[open] summary::after{ content:"\00d7"; }
-.theme-list summary:hover{ color:var(--text-1); }
+.theme-list summary:hover{ color:var(--f-accent); border-color:var(--f-accent); }
 .theme-list ul{
   list-style:none; margin:var(--space-3) 0 0; padding:0;
   display:flex; flex-wrap:wrap; gap:6px;
 }
+/* Inside a family card, so these follow the card's own palette rather than the
+   page's. Page tokens rendered a white pill on a dark card in light mode. */
 .theme-list a{
   display:inline-block; font-size:var(--text-xs); line-height:1.2;
   padding:5px 10px; border-radius:var(--radius-pill);
-  background:var(--bg-2); border:1px solid var(--border-0);
-  color:var(--text-1); text-decoration:none; white-space:nowrap;
+  background:var(--f-bg-1); border:1px solid var(--f-line);
+  color:var(--f-text); text-decoration:none; white-space:nowrap;
 }
-.theme-list a:hover{ border-color:var(--accent-cyan); color:var(--accent-cyan); }
+.theme-list a:hover{ border-color:var(--f-accent); color:var(--f-accent); }
 
 .family-count{ font-family:var(--font-mono); font-size:var(--text-xs); color:var(--f-text-dim); }
 
@@ -1418,7 +1427,7 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>10 themes, download one</summary>
+              <summary>Download one</summary>
               <ul>
                 <li><a href="pack/dark-pro/PXL%20Graphite.ask" download>Graphite</a></li>
                 <li><a href="pack/dark-pro/PXL%20Slate.ask" download>Slate</a></li>
@@ -1442,7 +1451,7 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>10 themes, download one</summary>
+              <summary>Download one</summary>
               <ul>
                 <li><a href="pack/neon/PXL%20Goa.ask" download>Goa</a></li>
                 <li><a href="pack/neon/PXL%20Zenon.ask" download>Zenon</a></li>
@@ -1466,7 +1475,7 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>10 themes, download one</summary>
+              <summary>Download one</summary>
               <ul>
                 <li><a href="pack/retro/PXL%20Oxblood.ask" download>Oxblood</a></li>
                 <li><a href="pack/retro/PXL%20Olive%20Drab.ask" download>Olive Drab</a></li>
@@ -1490,7 +1499,7 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>10 themes, download one</summary>
+              <summary>Download one</summary>
               <ul>
                 <li><a href="pack/light/PXL%20Daylight.ask" download>Daylight</a></li>
                 <li><a href="pack/light/PXL%20Paper.ask" download>Paper</a></li>
@@ -1514,7 +1523,7 @@ h3{ font-size:var(--text-lg); }
             <span style="background:var(--f-clip-5)"></span><span style="background:var(--f-clip-6)"></span>
           </div>
             <details class="theme-list">
-              <summary>5 themes, download one</summary>
+              <summary>Download one</summary>
               <ul>
                 <li><a href="pack/cyberpunk/PXL%20Neon%20Circuit.ask" download>Neon Circuit</a></li>
                 <li><a href="pack/cyberpunk/PXL%20Redline.ask" download>Redline</a></li>
