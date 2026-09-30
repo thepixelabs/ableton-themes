@@ -857,7 +857,7 @@ h3{ font-size:var(--text-lg); }
       "name": "Does the editor work on mobile or tablet?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No, not right now. The editor needs a desktop sized browser window and a mouse or trackpad to work properly, so phones and tablets are blocked at the door. The theme pack and install guide on this page work fine on any device; only the editor itself needs a desktop browser."
+        "text": "No, not right now. The editor needs a desktop sized browser window and a mouse or trackpad to work properly, so it won't open on phones and tablets. The theme pack and install guide on this page work fine on any device; only the editor itself needs a desktop browser."
       }
     },
     {
@@ -946,10 +946,9 @@ h3{ font-size:var(--text-lg); }
         <span class="eyebrow">Free · Ableton Live 12</span>
         <h1>45 free Ableton Live 12 themes, and an online editor to design your own.</h1>
         <p class="lede">An online Ableton theme editor that runs in your browser, no install.
-          Design against a
-          live UI mock-up, check contrast in OKLCH, export a ready <code>.ask</code>
-          file. Or skip the editor: the pack has 45 themes across five families,
-          already WCAG-checked.</p>
+          Pick colours on a live mock-up of Ableton, see whether the text stays
+          readable, and export a ready <code>.ask</code> file. Or skip the editor
+          and grab one of the 45 ready-made themes.</p>
         <div class="hero-cta">
           <a class="btn btn-primary editor-cta" href="editor.html">Open the online editor</a>
           <a class="btn btn-secondary" href="#pack">Browse the pack</a>
@@ -960,9 +959,9 @@ h3{ font-size:var(--text-lg); }
           download and install fine from any device.
         </p>
         <div class="trust-badges">
-          <span class="badge">All 276 styleable entries</span>
-          <span class="badge">OKLCH colour space, not RGB</span>
-          <span class="badge">WCAG AA checked, every theme</span>
+          <span class="badge">Every one of the 276 theme entries set</span>
+          <span class="badge">Colour changes keep text readable</span>
+          <span class="badge">Every theme checked for readable text (WCAG AA)</span>
         </div>
       </div>
     </div>
@@ -988,14 +987,14 @@ h3{ font-size:var(--text-lg); }
         <div class="step">
           <span class="step-num">02</span>
           <h3>Check contrast</h3>
-          <p>Contrast is checked in OKLCH as you edit, so hierarchy survives the
-             re-hue instead of breaking on export.</p>
+          <p>Every text and background pair is graded for readability as you edit, so
+             you catch hard-to-read text before you export.</p>
         </div>
         <div class="step">
           <span class="step-num">03</span>
-          <h3>Export .ask</h3>
-          <p>Export a ready-to-install .ask file and drop it straight into
-             Ableton's Themes folder.</p>
+          <h3>Export the .ask file</h3>
+          <p>Download a ready-to-install .ask file and drop it into Ableton's
+             Themes folder.</p>
         </div>
       </div>
 
@@ -1103,7 +1102,7 @@ h3{ font-size:var(--text-lg); }
             </div>
 
             <div class="family-panel" id="panel-neon" data-family="neon" hidden>
-              <p class="family-blurb"><strong>Neon</strong>: high-chroma accents on near-black, psytrance and synthwave dialed to full saturation.</p>
+              <p class="family-blurb"><strong>Neon</strong>: vivid accents on near-black, for psytrance and synthwave at full saturation.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="neon" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Neon theme family">
                   <div class="dawbar">
@@ -1170,7 +1169,7 @@ h3{ font-size:var(--text-lg); }
             </div>
 
             <div class="family-panel" id="panel-retro" data-family="retro" hidden>
-              <p class="family-blurb"><strong>Retro</strong>: cream, olive, oxblood: the colour language of vintage hardware.</p>
+              <p class="family-blurb"><strong>Retro</strong>: cream, olive and oxblood, the colours of vintage hardware.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="retro" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Retro theme family">
                   <div class="dawbar">
@@ -1237,7 +1236,7 @@ h3{ font-size:var(--text-lg); }
             </div>
 
             <div class="family-panel" id="panel-light" data-family="light" hidden>
-              <p class="family-blurb"><strong>Light</strong>: daylight-legible and genuinely rare: almost nobody makes a good light Ableton theme.</p>
+              <p class="family-blurb"><strong>Light</strong>: bright themes that stay easy to read in daylight.</p>
               <div class="mock-scroll">
                 <div class="mock-daw" data-family="light" role="img" aria-label="Mock-up of an Ableton Live session view, recolored in the Light theme family">
                   <div class="dawbar">
@@ -1384,31 +1383,33 @@ h3{ font-size:var(--text-lg); }
       <div class="section-head">
         <span class="eyebrow">What's under the hood</span>
         <h2 id="why-h">Why it's different</h2>
-        <p>Most themes recolour the dozen things you can see in a screenshot.
-           These cover all 276 entries.</p>
+        <p>An Ableton theme file has 276 entries. This pack sets every one of them,
+           and checks that the text stays readable.</p>
       </div>
       <div class="reasons">
         <div class="reason">
           <h3>All 276 entries</h3>
-          <p>236 colours and 40 numeric tuning values, every one styleable, not
-             just the parts that show up in a screenshot.</p>
+          <p>A theme file holds 236 colours and 40 numeric values. Every theme here
+             sets all of them, including the small details you only spot while
+             working.</p>
         </div>
         <div class="reason">
-          <h3>Built in OKLCH</h3>
-          <p>Re-hueing happens in a perceptual colour space, so shifting a theme's
-             hue doesn't quietly wreck its contrast and hierarchy the way naive
-             RGB or HSL shifts do.</p>
+          <h3>Hue changes that keep text readable</h3>
+          <p>The editor changes colours in OKLCH, a colour space that matches how
+             people see brightness. Shift a theme's hue and its brightness stays
+             put, so text and controls stay readable.</p>
         </div>
         <div class="reason">
-          <h3>WCAG-checked, actually</h3>
-          <p>Every theme in the pack is checked against WCAG contrast minimums.
-             No other Ableton theme pack does this.</p>
+          <h3>Checked for readable text</h3>
+          <p>Every theme in the pack is tested against WCAG, the standard for
+             readable text contrast (level AA).</p>
         </div>
         <div class="reason">
           <h3>Real clip colours</h3>
-          <p>Ableton's 18 built-in themes all share the same Clip1 to Clip16 palette;
-             only the chassis changes. This pack recolours the clips too, and
-             you'll see it the moment you open Session View.</p>
+          <p>Ableton's built-in themes share one set of clip colours (Clip1 to
+             Clip16) and only change the rest of the interface. Each theme here
+             has its own clip and track colours too, and you see them as soon as
+             you open Session View.</p>
         </div>
       </div>
     </div>
@@ -1420,9 +1421,9 @@ h3{ font-size:var(--text-lg); }
       <div class="section-head">
         <span class="eyebrow">45 themes, five families</span>
         <h2 id="pack-h">The pack</h2>
-        <p>Forty five .ask themes across Dark Pro, Neon, Retro, Light and Cyberpunk. Free, no
-           strings attached. Every one is contrast-checked and ships with its own
-           clip and track palette instead of a recoloured default.</p>
+        <p>45 .ask themes across Dark Pro, Neon, Retro, Light and Cyberpunk. All free.
+           Each one is checked for readable text and has its own clip and track
+           colours.</p>
       </div>
 
       <div class="family-grid">
@@ -1452,7 +1453,7 @@ h3{ font-size:var(--text-lg); }
         </article>
         <article class="family-card" data-family="neon">
           <h3>Neon</h3>
-          <p>High-chroma accents on near-black, psytrance and synthwave dialed to full saturation.</p>
+          <p>Vivid accents on near-black, for psytrance and synthwave at full saturation.</p>
           <div class="swatch-strip" aria-hidden="true">
             <span style="background:var(--f-clip-1)"></span><span style="background:var(--f-clip-2)"></span>
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
@@ -1476,7 +1477,7 @@ h3{ font-size:var(--text-lg); }
         </article>
         <article class="family-card" data-family="retro">
           <h3>Retro</h3>
-          <p>Cream, olive, oxblood: the colour language of vintage hardware.</p>
+          <p>Cream, olive and oxblood, the colours of vintage hardware.</p>
           <div class="swatch-strip" aria-hidden="true">
             <span style="background:var(--f-clip-1)"></span><span style="background:var(--f-clip-2)"></span>
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
@@ -1500,7 +1501,7 @@ h3{ font-size:var(--text-lg); }
         </article>
         <article class="family-card" data-family="light">
           <h3>Light</h3>
-          <p>Daylight-legible and genuinely rare: almost nobody makes a good light Ableton theme.</p>
+          <p>Bright themes that stay easy to read in daylight.</p>
           <div class="swatch-strip" aria-hidden="true">
             <span style="background:var(--f-clip-1)"></span><span style="background:var(--f-clip-2)"></span>
             <span style="background:var(--f-clip-3)"></span><span style="background:var(--f-clip-4)"></span>
@@ -1572,7 +1573,7 @@ h3{ font-size:var(--text-lg); }
           <span class="step-num">2</span>
           <div>
             <h3>Drop it in your Themes folder</h3>
-            <p>On macOS it lives inside the Ableton app itself. See below.</p>
+            <p>The folder is in a different place on macOS and Windows. Paths are below.</p>
           </div>
         </div>
         <div class="install-step">
@@ -1615,24 +1616,23 @@ h3{ font-size:var(--text-lg); }
       <div class="path-block">
         <h4>Or let a script find Ableton for you</h4>
         <p class="path-note">
-          A browser cannot look at your disk, so it can never find your Ableton install.
-          These scripts can. Put one in the same folder as your <code>.ask</code> files and
-          run it: it locates Ableton, copies every theme sitting next to it, and refuses to
-          run while Live is open. Both are plain text, so read them first if you like.
+          A web page can't see your disk, but a script can. Put one in the same folder as
+          your <code>.ask</code> files and run it. It finds Ableton, copies the themes
+          across, and won't run while Live is open. Both scripts are plain text, so you
+          can read them first.
         </p>
         <div class="hero-cta" style="margin-top:var(--space-3)">
           <a class="btn btn-secondary" href="install-macos.command" download="install-macos.command">macOS installer</a>
           <a class="btn btn-secondary" href="install-windows.bat" download="install-windows.bat">Windows installer</a>
         </div>
         <p class="path-note" style="margin-top:var(--space-3)">
-          On macOS, downloading the script directly strips its executable bit, so the copy
-          inside <a href="pack/pixelabs-theme-pack.zip">the theme pack zip</a> is the easier
-          route: unzip it and the script is ready to run. Either way macOS quarantines
-          scripts from the web, so the first time you must right click it and choose
-          <strong>Open</strong> rather than double clicking. On Windows, if SmartScreen
-          warns you, choose <strong>More info</strong> then <strong>Run anyway</strong>, and
-          if files fail to copy, right click the script and choose
-          <strong>Run as administrator</strong>.
+          <strong>macOS:</strong> a script downloaded on its own can't be run directly, so use
+          the copy inside <a href="pack/pixelabs-theme-pack.zip">the theme pack zip</a>
+          instead. The first time, right click the script and choose <strong>Open</strong>
+          rather than double clicking, because macOS blocks scripts from the web.<br>
+          <strong>Windows:</strong> if SmartScreen warns you, choose <strong>More info</strong>
+          then <strong>Run anyway</strong>. If files fail to copy, right click the script and
+          choose <strong>Run as administrator</strong>.
         </p>
       </div>
     </div>
@@ -1657,8 +1657,8 @@ h3{ font-size:var(--text-lg); }
         <details class="faq-item">
           <summary>Does it cost anything?</summary>
           <p>No. The editor and all 45 themes are free, full stop. No email
-             wall, no trial timer, no upsell buried in the install. It's here to
-             put PixeLabs in front of producers; that's the whole business model.</p>
+             wall, no trial timer, no upsell buried in the install. It's free
+             because it introduces producers to PixeLabs. There is no paid version.</p>
         </details>
         <details class="faq-item">
           <summary>What version of Ableton do I need?</summary>
@@ -1674,7 +1674,7 @@ h3{ font-size:var(--text-lg); }
         </details>
         <details class="faq-item">
           <summary>Does the editor work on mobile or tablet?</summary>
-          <p>No, not right now. The editor needs a desktop sized browser window and a mouse or trackpad to work properly, so phones and tablets are blocked at the door. The theme pack and install guide on this page work fine on any device; only the editor itself needs a desktop browser.</p>
+          <p>No, not right now. The editor needs a desktop sized browser window and a mouse or trackpad to work properly, so it won't open on phones and tablets. The theme pack and install guide on this page work fine on any device; only the editor itself needs a desktop browser.</p>
         </details>
         <details class="faq-item">
           <summary>What is the difference between an Ableton skin and a theme?</summary>
